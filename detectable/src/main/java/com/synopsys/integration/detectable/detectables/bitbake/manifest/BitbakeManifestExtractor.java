@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,6 +44,8 @@ public class BitbakeManifestExtractor {
     private final ShowRecipesOutputParser showRecipesOutputParser;
     private final BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap;
     private final ToolVersionLogger toolVersionLogger;
+    // TODO inject
+    private final LicenseManifestFinder licenseManifestFinder = new LicenseManifestFinder();
 
     public BitbakeManifestExtractor(DetectableExecutableRunner executableRunner, FileFinder fileFinder, GraphParserTransformer graphParserTransformer, BitbakeManifestGraphTransformer bitbakeManifestGraphTransformer,
         ShowRecipesOutputParser showRecipesOutputParser, BitbakeRecipesToLayerMapConverter bitbakeRecipesToLayerMap, ToolVersionLogger toolVersionLogger) {
@@ -55,32 +58,25 @@ public class BitbakeManifestExtractor {
         this.toolVersionLogger = toolVersionLogger;
     }
 
-    public Extraction extract(File sourceDirectory, File buildEnvScript, List<String> sourceArguments, List<String> packageNames, boolean followSymLinks,
+    public Extraction extract(File sourceDirectory, File buildEnvScript, List<String> sourceArguments, List<String> targetImageNames, boolean followSymLinks,
         Integer searchDepth, ExecutableTarget bash, String licenseManifestFilePath, BitbakeDetectorAlgorithm algorithm) {
 
-        String packageName = packageNames.get(0);
+        String targetImageName = targetImageNames.get(0);
 
         // TODO inject?
         BitbakeSession bitbakeSession = new BitbakeSession(fileFinder, executableRunner, sourceDirectory, buildEnvScript, sourceArguments, bash, toolVersionLogger);
 
         Extraction extraction;
-        if (StringUtils.isBlank(licenseManifestFilePath)) {
-            extraction = new Extraction.Builder()
-                .failure("The lazy developer of this detectable has yet to implement the code to find the license file, so sadly you need to provide it.")
-                .build();
-            return extraction;
-        }
-
         LicenseManifestParser licenseManifestParser = new LicenseManifestParser(); // TODO inject
         TaskDependsDotFile taskDependsDotFile = new TaskDependsDotFile(); // TODO inject
         DependencyGraph dependencyGraph;
         try {
-            File taskDependsFile = taskDependsDotFile.generate(bitbakeSession, sourceDirectory, packageName, followSymLinks, searchDepth);
+            File taskDependsFile = taskDependsDotFile.generate(bitbakeSession, sourceDirectory, targetImageName, followSymLinks, searchDepth);
             InputStream dependsFileInputStream = FileUtils.openInputStream(taskDependsFile);
             GraphParser graphParser = new GraphParser(dependsFileInputStream);
             BitbakeGraph bitbakeGraph = graphParserTransformer.transform(graphParser);
             logger.info("Parsed {} recipes nodes from task-depends.dot file", bitbakeGraph.getNodes().size());
-            List<String> licenseManifestFileLines = readLicenseManifestFile(licenseManifestFilePath);
+            List<String> licenseManifestFileLines = readLicenseManifestFile(sourceDirectory, targetImageName, licenseManifestFilePath);
             Map<String, String> imageRecipes = licenseManifestParser.collectImageRecipes(licenseManifestFileLines);
             logger.info("Found {} image recipes in license.manifest file", imageRecipes.size());
             List<String> bitbakeRecipeCatalogLines = bitbakeSession.executeBitbakeForRecipeLayerLines();
@@ -100,16 +96,17 @@ public class BitbakeManifestExtractor {
         return extraction;
     }
 
-    private List<String> readLicenseManifestFile(String licenseManifestFilePath) throws IntegrationException {
-        File licenseManifestFile = new File(licenseManifestFilePath);
-        if (!licenseManifestFile.canRead()) {
-            throw new IntegrationException(String.format("License Manifest file %s is non-existent or not readable.", licenseManifestFilePath));
+    private List<String> readLicenseManifestFile(File sourceDir, String targetImageName, String givenLicenseManifestFilePath) throws IntegrationException {
+
+        Optional<File> licenseManifestFile = licenseManifestFinder.find(sourceDir, targetImageName, givenLicenseManifestFilePath);
+        if (!licenseManifestFile.isPresent()) {
+            throw new IntegrationException(String.format("Unable to find license.manifest for %s", targetImageName));
         }
         List<String> licenseManifestFileLines;
         try {
-            licenseManifestFileLines = FileUtils.readLines(licenseManifestFile, StandardCharsets.UTF_8);
+            licenseManifestFileLines = FileUtils.readLines(licenseManifestFile.get(), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new IntegrationException(String.format("License Manifest file %s is non-existent or not readable.", licenseManifestFilePath));
+            throw new IntegrationException(String.format("License Manifest file %s is non-existent or not readable.", givenLicenseManifestFilePath));
         }
         return licenseManifestFileLines;
     }
