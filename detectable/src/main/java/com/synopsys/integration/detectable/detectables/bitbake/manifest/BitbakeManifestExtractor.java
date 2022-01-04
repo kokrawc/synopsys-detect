@@ -106,7 +106,7 @@ public class BitbakeManifestExtractor {
         try {
             licenseManifestFileLines = FileUtils.readLines(licenseManifestFile.get(), StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new IntegrationException(String.format("License Manifest file %s is non-existent or not readable.", givenLicenseManifestFilePath));
+            throw new IntegrationException(String.format("Error reading License Manifest file %s: %s", givenLicenseManifestFilePath, e.getMessage()), e);
         }
         return licenseManifestFileLines;
     }
