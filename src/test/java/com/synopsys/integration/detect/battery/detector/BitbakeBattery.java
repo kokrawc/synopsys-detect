@@ -21,14 +21,27 @@ public class BitbakeBattery {
     }
 
     @Test
-    void testBitbakeManifestDetector() {
-        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("bitbake-manifest-poky", "bitbake/manifest/poky");
+    void testBitbakeManifestDetectorByLayer() {
+        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("bitbake-manifest-bylayer", "bitbake/manifest/bylayer");
         test.sourceFileFromResource("oe-init-build-env");
         test.sourceFileFromResource("task-depends.dot");
         test.executableFromResourceFiles(DetectProperties.DETECT_BASH_PATH.getProperty(), "bitbake-g.xout", "bitbake-layers-show-recipes.xout");
         test.property("detect.bitbake.package.names", "core-image-sato");
         test.property("detect.bitbake.algorithm", "BYLAYER");
-        test.property("detect.bitbake.license.manifest.file.path", "src/test/resources/battery/bitbake/manifest/poky/license.manifest");
+        test.property("detect.bitbake.license.manifest.file.path", "src/test/resources/battery/bitbake/manifest/bylayer/license.manifest");
+        test.expectBdioResources();
+        test.run();
+    }
+
+    @Test
+    void testBitbakeManifestDetectorBiLevel() {
+        DetectorBatteryTestRunner test = new DetectorBatteryTestRunner("bitbake-manifest-bilevel", "bitbake/manifest/bilevel");
+        test.sourceFileFromResource("oe-init-build-env");
+        test.sourceFileFromResource("task-depends.dot");
+        test.executableFromResourceFiles(DetectProperties.DETECT_BASH_PATH.getProperty(), "bitbake-g.xout", "bitbake-layers-show-recipes.xout");
+        test.property("detect.bitbake.package.names", "core-image-sato");
+        test.property("detect.bitbake.algorithm", "BILEVEL");
+        test.property("detect.bitbake.license.manifest.file.path", "src/test/resources/battery/bitbake/manifest/bilevel/license.manifest");
         test.expectBdioResources();
         test.run();
     }

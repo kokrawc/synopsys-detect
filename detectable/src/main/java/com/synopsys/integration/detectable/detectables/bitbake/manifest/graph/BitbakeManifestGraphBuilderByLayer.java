@@ -47,7 +47,7 @@ public class BitbakeManifestGraphBuilderByLayer implements BitbakeManifestGraphB
     }
 
     @Override
-    public BitbakeManifestGraphBuilder addRecipe(String currentLayer, @Nullable String parentRecipeName, String recipeLayer, String recipeName, String recipeVersion) {
+    public BitbakeManifestGraphBuilder addRecipe(String currentLayer, @Nullable String parentRecipeName, String recipeLayer, String recipeName, String recipeVersion, boolean direct) {
         if (recipeDependenciesAdded.containsKey(recipeName)) {
             // if we were building a true graph, we wouldn't do this
             return this;

@@ -112,8 +112,8 @@ public class BitbakeManifestGraphTransformer {
         recipesAddedToGraph.add(recipeName);
         recipeDependencyBreadcrumbs.add(recipeName);
 
-
-        graphBuilder.addRecipe(currentLayer, parentRecipeName, recipeLayer, recipeName, recipeVersion);
+        boolean direct = depth == 0;
+        graphBuilder.addRecipe(currentLayer, parentRecipeName, recipeLayer, recipeName, recipeVersion, direct);
 
         Optional<BitbakeNode> recipeNode = bitbakeNodesByName.get(recipeName);
         if (recipeNode.isPresent()) {
