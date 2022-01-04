@@ -27,9 +27,8 @@ public class BitbakeBattery {
         test.sourceFileFromResource("task-depends.dot");
         test.executableFromResourceFiles(DetectProperties.DETECT_BASH_PATH.getProperty(), "bitbake-g.xout", "bitbake-layers-show-recipes.xout");
         test.property("detect.bitbake.package.names", "core-image-sato");
-        test.property("detect.bitbake.manifest.detector", "true");
-        // TODO ummmm....
-        test.property("detect.bitbake.license.manifest.file.path", "/tmp/license.manifest");
+        test.property("detect.bitbake.algorithm", "BYLAYER");
+        test.property("detect.bitbake.license.manifest.file.path", "src/test/resources/battery/bitbake/manifest/poky/license.manifest");
         test.expectBdioResources();
         test.run();
     }
