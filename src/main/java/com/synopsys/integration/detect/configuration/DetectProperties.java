@@ -47,6 +47,7 @@ import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnipp
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
 import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
+import com.synopsys.integration.detectable.detectables.bitbake.common.BitbakeDetectorAlgorithm;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
 
@@ -258,13 +259,22 @@ public class DetectProperties {
             .setHelp("A comma-separated list of arguments to supply when sourcing the build environment init script.")
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<BooleanProperty> DETECT_BITBAKE_MANIFEST_DETECTOR =
-        new DetectProperty<>(new BooleanProperty("detect.bitbake.manifest.detector", false))
-            .setInfo("Select the Bitbake Manifest detector",
-                DetectPropertyFromVersion.VERSION_7_10_0)
-            .setHelp(
-                "If Bitbake applies, a value of true selects the Bitbake Manifest detector (vs. the Bitbake Dependency detector). The Bitbake Manifest detector produces a graph for a single target image, organized by layer, that excludes build tools.")
+    // TODO remove?
+//    public static final DetectProperty<BooleanProperty> DETECT_BITBAKE_MANIFEST_DETECTOR =
+//        new DetectProperty<>(new BooleanProperty("detect.bitbake.manifest.detector", false))
+//            .setInfo("Select the Bitbake Manifest detector",
+//                DetectPropertyFromVersion.VERSION_7_10_0)
+//            .setHelp(
+//                "If Bitbake applies, a value of true selects the Bitbake Manifest detector (vs. the Bitbake Dependency detector). The Bitbake Manifest detector produces a graph for a single target image, organized by layer, that excludes build tools.")
+//            .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN);
+
+    // TODO TEMPORARY
+    public static final DetectProperty<EnumProperty<BitbakeDetectorAlgorithm>> DETECT_BITBAKE_ALGORITHM =
+        new DetectProperty<>(new EnumProperty<>("detect.bitbake.algorithm", BitbakeDetectorAlgorithm.LEGACY, BitbakeDetectorAlgorithm.class))
+            .setInfo("Detect Bitbake Detector Algorithm", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp("Selects the graph building algorithm the Bitbake detector will use.")
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN);
+
 
     public static final DetectProperty<NullableStringProperty> DETECT_BITBAKE_LICENSE_MANIFEST_FILE =
         new DetectProperty<>(new NullableStringProperty("detect.bitbake.license.manifest.file.path"))

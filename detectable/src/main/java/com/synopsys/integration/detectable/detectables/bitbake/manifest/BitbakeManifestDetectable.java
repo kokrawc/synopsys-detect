@@ -14,7 +14,7 @@ import com.synopsys.integration.detectable.detectable.explanation.PropertyProvid
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 import com.synopsys.integration.detectable.detectables.bitbake.common.BitbakeDetectableOptions;
-import com.synopsys.integration.detectable.detectables.bitbake.dependency.BitbakeExtractor;
+import com.synopsys.integration.detectable.detectables.bitbake.common.BitbakeDetectorAlgorithm;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -42,8 +42,8 @@ public class BitbakeManifestDetectable extends Detectable {
         Requirements requirements = new Requirements(fileFinder, environment);
         foundBuildEnvScript = requirements.file(bitbakeDetectableOptions.getBuildEnvName());
 
-        if (!bitbakeDetectableOptions.isUseManifestDetector()) {
-            return new PropertyInsufficientDetectableResult("Bitbake Manifest detector was not requested (detect.bitbake.manifest.detector is false).");
+        if (bitbakeDetectableOptions.getBitbakeAlgorithm() == BitbakeDetectorAlgorithm.LEGACY) {
+            return new PropertyInsufficientDetectableResult("Bitbake Manifest detector was not requested (detect.bitbake.algorithm=LEGACY).");
         }
 
         if (bitbakeDetectableOptions.getPackageNames() == null || (bitbakeDetectableOptions.getPackageNames().size() != 1)) {
@@ -65,6 +65,7 @@ public class BitbakeManifestDetectable extends Detectable {
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) {
         return bitbakeManifestExtractor.extract(environment.getDirectory(), foundBuildEnvScript, bitbakeDetectableOptions.getSourceArguments(), bitbakeDetectableOptions.getPackageNames(),
-            bitbakeDetectableOptions.isFollowSymLinks(), bitbakeDetectableOptions.getSearchDepth(), bashExe, bitbakeDetectableOptions.getLicenseManifestFilePath());
+            bitbakeDetectableOptions.isFollowSymLinks(), bitbakeDetectableOptions.getSearchDepth(), bashExe, bitbakeDetectableOptions.getLicenseManifestFilePath(),
+            bitbakeDetectableOptions.getBitbakeAlgorithm());
     }
 }

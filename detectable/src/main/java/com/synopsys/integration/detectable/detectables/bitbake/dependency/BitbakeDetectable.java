@@ -14,6 +14,7 @@ import com.synopsys.integration.detectable.detectable.explanation.PropertyProvid
 import com.synopsys.integration.detectable.detectable.result.DetectableResult;
 import com.synopsys.integration.detectable.detectable.result.PropertyInsufficientDetectableResult;
 import com.synopsys.integration.detectable.detectables.bitbake.common.BitbakeDetectableOptions;
+import com.synopsys.integration.detectable.detectables.bitbake.common.BitbakeDetectorAlgorithm;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
 
@@ -41,8 +42,8 @@ public class BitbakeDetectable extends Detectable {
         Requirements requirements = new Requirements(fileFinder, environment);
         foundBuildEnvScript = requirements.file(bitbakeDetectableOptions.getBuildEnvName());
 
-        if (bitbakeDetectableOptions.isUseManifestDetector()) {
-            return new PropertyInsufficientDetectableResult("Bitbake Manifest detector was requested so Bitbake Dependency Detector will not run.");
+        if (bitbakeDetectableOptions.getBitbakeAlgorithm() != BitbakeDetectorAlgorithm.LEGACY) {
+            return new PropertyInsufficientDetectableResult("Requested Bitbake algorithm is not LEGACY so Bitbake Dependency Detector will not run.");
         }
 
         if (bitbakeDetectableOptions.getPackageNames() == null || bitbakeDetectableOptions.getPackageNames().isEmpty()) {

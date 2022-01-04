@@ -18,6 +18,7 @@ import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.executable.DetectableExecutableRunner;
+import com.synopsys.integration.detectable.detectables.bitbake.common.BitbakeDetectorAlgorithm;
 import com.synopsys.integration.detectable.detectables.bitbake.common.BitbakeSession;
 import com.synopsys.integration.detectable.detectables.bitbake.common.TaskDependsDotFile;
 import com.synopsys.integration.detectable.detectables.bitbake.manifest.graph.BitbakeManifestGraphTransformer;
@@ -55,7 +56,7 @@ public class BitbakeManifestExtractor {
     }
 
     public Extraction extract(File sourceDirectory, File buildEnvScript, List<String> sourceArguments, List<String> packageNames, boolean followSymLinks,
-        Integer searchDepth, ExecutableTarget bash, String licenseManifestFilePath) {
+        Integer searchDepth, ExecutableTarget bash, String licenseManifestFilePath, BitbakeDetectorAlgorithm algorithm) {
 
         String packageName = packageNames.get(0);
 
@@ -85,7 +86,7 @@ public class BitbakeManifestExtractor {
             List<String> bitbakeRecipeCatalogLines = bitbakeSession.executeBitbakeForRecipeLayerLines();
             ShowRecipesResults showRecipesResults = showRecipesOutputParser.parse(bitbakeRecipeCatalogLines);
             logger.info("Found {} recipes on {} layers in show-recipes output", showRecipesResults.getRecipes().size(), showRecipesResults.getLayerNames().size());
-            dependencyGraph = bitbakeManifestGraphTransformer.generateGraph(imageRecipes, showRecipesResults, bitbakeGraph);
+            dependencyGraph = bitbakeManifestGraphTransformer.generateGraph(imageRecipes, showRecipesResults, bitbakeGraph, algorithm);
         } catch (IntegrationException | ExecutableRunnerException | IOException e) {
             extraction = new Extraction.Builder()
                 .failure(e.getMessage())

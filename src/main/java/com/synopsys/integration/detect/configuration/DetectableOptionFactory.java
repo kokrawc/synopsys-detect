@@ -12,7 +12,6 @@ import com.synopsys.integration.configuration.config.PropertyConfiguration;
 import com.synopsys.integration.configuration.property.base.NullableProperty;
 import com.synopsys.integration.configuration.property.base.ValuedProperty;
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
-import com.synopsys.integration.configuration.property.types.path.PathValue;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
 import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
@@ -21,6 +20,7 @@ import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspe
 import com.synopsys.integration.detectable.detectables.bazel.BazelDetectableOptions;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bitbake.common.BitbakeDetectableOptions;
+import com.synopsys.integration.detectable.detectables.bitbake.common.BitbakeDetectorAlgorithm;
 import com.synopsys.integration.detectable.detectables.clang.ClangDetectableOptions;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractorOptions;
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileExtractorOptions;
@@ -75,9 +75,9 @@ public class DetectableOptionFactory {
         List<String> sourceArguments = getValue(DetectProperties.DETECT_BITBAKE_SOURCE_ARGUMENTS);
         List<String> packageNames = getValue(DetectProperties.DETECT_BITBAKE_PACKAGE_NAMES);
         Integer searchDepth = getValue(DetectProperties.DETECT_BITBAKE_SEARCH_DEPTH);
-        Boolean useBitbakeManifestDetector = getValue(DetectProperties.DETECT_BITBAKE_MANIFEST_DETECTOR);
+        BitbakeDetectorAlgorithm bitbakeAlgorithm = getValue(DetectProperties.DETECT_BITBAKE_ALGORITHM);
         String licenseManifestFilePath = getNullableValue(DetectProperties.DETECT_BITBAKE_LICENSE_MANIFEST_FILE);
-        return new BitbakeDetectableOptions(buildEnvName, sourceArguments, packageNames, searchDepth, getFollowSymLinks(), useBitbakeManifestDetector, licenseManifestFilePath);
+        return new BitbakeDetectableOptions(buildEnvName, sourceArguments, packageNames, searchDepth, getFollowSymLinks(), bitbakeAlgorithm, licenseManifestFilePath);
     }
 
     public ClangDetectableOptions createClangDetectableOptions() {

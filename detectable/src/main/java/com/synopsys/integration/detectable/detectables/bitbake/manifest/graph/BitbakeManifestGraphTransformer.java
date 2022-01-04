@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
+import com.synopsys.integration.detectable.detectables.bitbake.common.BitbakeDetectorAlgorithm;
 import com.synopsys.integration.detectable.detectables.bitbake.common.model.BitbakeGraph;
 import com.synopsys.integration.detectable.detectables.bitbake.common.model.BitbakeNode;
 import com.synopsys.integration.detectable.detectables.bitbake.common.model.BitbakeRecipe;
@@ -30,9 +31,17 @@ public class BitbakeManifestGraphTransformer {
         this.bitbakeManifestExternalIdGenerator = bitbakeManifestExternalIdGenerator;
     }
 
-    public DependencyGraph generateGraph(Map<String, String> imageRecipes, ShowRecipesResults showRecipesResult, BitbakeGraph bitbakeGraphFromTaskDepends) {
+    public DependencyGraph generateGraph(Map<String, String> imageRecipes, ShowRecipesResults showRecipesResult, BitbakeGraph bitbakeGraphFromTaskDepends, BitbakeDetectorAlgorithm algorithm) {
 
-        BitbakeManifestGraphBuilder graphBuilder = new BitbakeManifestGraphBuilderByLayer(bitbakeManifestExternalIdGenerator);
+        // TODO TEMPORARY
+        BitbakeManifestGraphBuilder graphBuilder;
+        if (algorithm == BitbakeDetectorAlgorithm.BYLAYER) {
+            graphBuilder = new BitbakeManifestGraphBuilderByLayer(bitbakeManifestExternalIdGenerator);
+        } else if (algorithm == BitbakeDetectorAlgorithm.BILEVEL) {
+            graphBuilder = new BitbakeManifestGraphBuilderTwoLevel(bitbakeManifestExternalIdGenerator);
+        } else {
+            throw new UnsupportedOperationException(String.format("Unknown BitbakeDetectorAlgorithm", algorithm.toString()));
+        }
 
         // TODO it seems we can't afford a graph (way too many nodes). Have to follow task-depends graph to find dependencies, but add as
         // a flat list; each recipe only once (this presumably is why Jake did it that way).

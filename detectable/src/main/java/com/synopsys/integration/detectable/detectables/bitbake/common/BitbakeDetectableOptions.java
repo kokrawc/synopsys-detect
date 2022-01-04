@@ -10,17 +10,17 @@ public class BitbakeDetectableOptions {
     private final List<String> packageNames;
     private final Integer searchDepth;
     private final boolean followSymLinks;
-    private final boolean useManifestDetector;
+    private final BitbakeDetectorAlgorithm bitbakeAlgorithm;
     private final String licenseManifestFilePath;
 
     public BitbakeDetectableOptions(String buildEnvName, List<String> sourceArguments, List<String> packageNames, Integer searchDepth, boolean followSymLinks,
-        boolean useManifestDetector, String licenseManifestFilePath) {
+        BitbakeDetectorAlgorithm bitbakeAlgorithm, String licenseManifestFilePath) {
         this.buildEnvName = buildEnvName;
         this.sourceArguments = sourceArguments;
         this.packageNames = packageNames;
         this.searchDepth = searchDepth;
         this.followSymLinks = followSymLinks;
-        this.useManifestDetector = useManifestDetector;
+        this.bitbakeAlgorithm = bitbakeAlgorithm;
         this.licenseManifestFilePath = licenseManifestFilePath;
     }
 
@@ -44,8 +44,8 @@ public class BitbakeDetectableOptions {
         return followSymLinks;
     }
 
-    public boolean isUseManifestDetector() {
-        return useManifestDetector;
+    public BitbakeDetectorAlgorithm getBitbakeAlgorithm() {
+        return bitbakeAlgorithm;
     }
 
     @Nullable

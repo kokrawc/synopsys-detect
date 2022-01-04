@@ -18,6 +18,7 @@ import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectables.bitbake.common.BitbakeDetectableOptions;
+import com.synopsys.integration.detectable.detectables.bitbake.common.BitbakeDetectorAlgorithm;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.functional.DetectableFunctionalTest;
 import com.synopsys.integration.detectable.util.graph.NameVersionGraphAssert;
@@ -71,7 +72,7 @@ public class BitbakeDetectableTest extends DetectableFunctionalTest {
     public Detectable create(@NotNull DetectableEnvironment detectableEnvironment) {
         return detectableFactory.createBitbakeDetectable(
             detectableEnvironment,
-            new BitbakeDetectableOptions("oe-init-build-env", new ArrayList<>(), Collections.singletonList("core-image-minimal"), 0, false, false, null),
+            new BitbakeDetectableOptions("oe-init-build-env", new ArrayList<>(), Collections.singletonList("core-image-minimal"), 0, false, BitbakeDetectorAlgorithm.LEGACY, null),
             () -> ExecutableTarget.forCommand("bash")
         );
     }
