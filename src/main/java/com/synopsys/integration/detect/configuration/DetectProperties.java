@@ -268,9 +268,10 @@ public class DetectProperties {
 //                "If Bitbake applies, a value of true selects the Bitbake Manifest detector (vs. the Bitbake Dependency detector). The Bitbake Manifest detector produces a graph for a single target image, organized by layer, that excludes build tools.")
 //            .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN);
 
-    // TODO TEMPORARY
+    // TODO TEMPORARY?
+    // TODO if decide to keep: change default back to LEGACY
     public static final DetectProperty<EnumProperty<BitbakeDetectorAlgorithm>> DETECT_BITBAKE_ALGORITHM =
-        new DetectProperty<>(new EnumProperty<>("detect.bitbake.algorithm", BitbakeDetectorAlgorithm.LEGACY, BitbakeDetectorAlgorithm.class))
+        new DetectProperty<>(new EnumProperty<>("detect.bitbake.algorithm", BitbakeDetectorAlgorithm.BILEVEL, BitbakeDetectorAlgorithm.class))
             .setInfo("Detect Bitbake Detector Algorithm", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp("Selects the graph building algorithm the Bitbake detector will use.")
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN);

@@ -16,6 +16,10 @@ public class BitbakeBattery {
         test.sourceFileFromResource("task-depends.dot");
         test.executableFromResourceFiles(DetectProperties.DETECT_BASH_PATH.getProperty(), "bitbake-g.xout", "bitbake-layers-show-recipes.xout");
         test.property("detect.bitbake.package.names", "core-image-sato");
+
+        // TODO change default back to LEGACY and remove this
+        test.property("detect.bitbake.algorithm", "LEGACY");
+
         test.expectBdioResources();
         test.run();
     }

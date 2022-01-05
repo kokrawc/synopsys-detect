@@ -31,7 +31,9 @@ public class BitbakeManifestGraphBuilderTwoLevel implements BitbakeManifestGraph
     @Override
     public BitbakeManifestGraphBuilder addRecipe(final String currentLayer, @Nullable final String parentRecipeName, final String recipeLayer, final String recipeName, final String recipeVersion, boolean direct) {
         if (recipeDependenciesAdded.containsKey(recipeName)) {
-            // if we were building a true graph, we wouldn't do this
+            // TODO if we were building a true graph, we wouldn't do this
+            // Except that we never get here: Transformer dedups first
+            logger.debug("Skipping already-added recipe: {} [parent: {}]", recipeName, parentRecipeName);
             return this;
         }
         ExternalId imageRecipeExternalId = bitbakeManifestExternalIdGenerator.generateRecipeExternalId(recipeLayer, recipeName, recipeVersion);

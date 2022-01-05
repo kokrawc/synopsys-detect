@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,21 +61,27 @@ public class BitbakeManifestGraphTransformer {
         for (String currentLayerName : showRecipesResult.getLayerNames()) {
             graphBuilder.addLayer(currentLayerName);
 
-            for (Map.Entry<String, String> candidateImageRecipeEntry : imageRecipes.entrySet()) {
-                String candidateImageRecipeName = candidateImageRecipeEntry.getKey();
-                String candidateImageRecipeVersion = candidateImageRecipeEntry.getValue();
-
-                // TODO this may be unnecessary
-                if (StringUtils.isBlank(candidateImageRecipeVersion)) {
-                    logger.warn("*** NO VERSION for recipe {}", candidateImageRecipeName);
+            for (Map.Entry<String, String> imageRecipeEntry : imageRecipes.entrySet()) {
+                String recipeName = imageRecipeEntry.getKey();
+                Optional<String> recipeVersion = deriveVersion(bitbakeNodesByName, recipeName, imageRecipeEntry.getValue());
+                if (!recipeVersion.isPresent()) {
+                    logger.warn("No version found for recipe {}", recipeName);
                     continue;
                 }
                 addRecipeToGraph(showRecipesResult, bitbakeGraphFromTaskDepends, bitbakeNodesByName, recipeVersionLookup,
-                    graphBuilder, null, currentLayerName, currentLayerName, candidateImageRecipeName, candidateImageRecipeVersion, 0, new ArrayList<>(), recipesAddedToGraph);
+                    graphBuilder, null, currentLayerName, currentLayerName, recipeName, recipeVersion.get(), 0, new ArrayList<>(), recipesAddedToGraph);
             }
         }
         logger.info("# recipes added to graph: {}", recipesAddedToGraph.size());
         return graphBuilder.build();
+    }
+
+    private Optional<String> deriveVersion(final BitbakeNodesByName bitbakeNodesByName, String recipeName, String origRecipeVersion) {
+        Optional<BitbakeNode> node = bitbakeNodesByName.get(recipeName);
+        if (node.isPresent()) {
+            return node.get().getVersion();
+        }
+        return Optional.ofNullable(origRecipeVersion);
     }
 
     private void addRecipeToGraph(ShowRecipesResults showRecipesResult, BitbakeGraph bitbakeGraphFromTaskDepends, BitbakeNodesByName bitbakeNodesByName,
@@ -99,11 +106,15 @@ public class BitbakeManifestGraphTransformer {
         }
         //logger.info("recipeDependencyBreadcrumbs: {}", recipeDependencyBreadcrumbs);
         if (recipeDependencyBreadcrumbs.contains(recipeName)) {
-            //logger.info("Recipe {} is already in breadcrumb list {}; not adding it (again) to graph", recipeName, recipeDependencyBreadcrumbs);
+            logger.info("Transformer: Recipe {} is already in breadcrumb list {}; not adding it (again) to graph", recipeName, recipeDependencyBreadcrumbs);
             return;
         }
 
+        // TODO Removing this broke battery tests and actual run (seemed to be an inf loop)
+        // not 100% sure why; but not sure there's a need to find out: BD will depup, so we might as well dedup
         if (recipesAddedToGraph.contains(recipeName)) {
+            // TODO this is redundant with dup check in graphbuilder.
+            // logger.debug("Transformer: Skipping already-added recipe: {} [parent: {}]", recipeName, parentRecipeName);
             return;
         }
 
