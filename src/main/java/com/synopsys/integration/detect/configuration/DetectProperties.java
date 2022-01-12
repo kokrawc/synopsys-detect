@@ -19,11 +19,12 @@ import com.synopsys.integration.configuration.property.Properties;
 import com.synopsys.integration.configuration.property.Property;
 import com.synopsys.integration.configuration.property.base.PassthroughProperty;
 import com.synopsys.integration.configuration.property.types.bool.BooleanProperty;
+import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.AllNoneEnum;
+import com.synopsys.integration.configuration.property.types.enumallnone.enumeration.NoneEnum;
+import com.synopsys.integration.configuration.property.types.enumallnone.property.AllNoneEnumListProperty;
+import com.synopsys.integration.configuration.property.types.enumallnone.property.NoneEnumListProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumProperty;
 import com.synopsys.integration.configuration.property.types.enumextended.ExtendedEnumValue;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumListProperty;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumUtils;
-import com.synopsys.integration.configuration.property.types.enumfilterable.FilterableEnumValue;
 import com.synopsys.integration.configuration.property.types.enums.EnumListProperty;
 import com.synopsys.integration.configuration.property.types.enums.EnumProperty;
 import com.synopsys.integration.configuration.property.types.integer.IntegerProperty;
@@ -45,8 +46,10 @@ import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedIndividualFileMatchingMode;
 import com.synopsys.integration.detect.tool.signaturescanner.enums.ExtendedSnippetMode;
 import com.synopsys.integration.detect.workflow.bdio.AggregateMode;
-import com.synopsys.integration.detectable.detectable.enums.DependencyType;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
+import com.synopsys.integration.detectable.detectables.bitbake.BitbakeDependencyType;
+import com.synopsys.integration.detectable.detectables.conan.cli.config.ConanDependencyType;
+import com.synopsys.integration.detectable.detectables.pnpm.lockfile.model.PnpmDependencyType;
 import com.synopsys.integration.detector.base.DetectorType;
 import com.synopsys.integration.log.LogLevel;
 
@@ -167,8 +170,8 @@ public class DetectProperties {
             .setHelp("A comma-separated list of additional options to pass to the bazel cquery command.")
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<FilterableEnumListProperty<WorkspaceRule>> DETECT_BAZEL_DEPENDENCY_RULE =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class))
+    public static final DetectProperty<AllNoneEnumListProperty<WorkspaceRule>> DETECT_BAZEL_DEPENDENCY_RULE =
+        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.bazel.dependency.type", emptyList(), WorkspaceRule.class))
             .setInfo("Bazel workspace external dependency rule", DetectPropertyFromVersion.VERSION_6_0_0)
             .setHelp("The Bazel workspace rule(s) used to pull in external dependencies. If not set, Detect will attempt to determine the rule(s) from the contents of the WORKSPACE file.")
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN);
@@ -179,9 +182,9 @@ public class DetectProperties {
             .setHelp("The path to the conan executable.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<BooleanProperty> DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
-        new DetectProperty<>(new BooleanProperty("detect.conan.include.build.dependencies", true))
-            .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
+    public static final DetectProperty<NoneEnumListProperty<ConanDependencyType>> DETECT_CONAN_DEPENDENCY_TYPES =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.conan.dependency.types.excluded", NoneEnum.NONE, ConanDependencyType.class))
+            .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_7_10_0)
             .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN);
 
@@ -214,7 +217,7 @@ public class DetectProperties {
 
     public static final DetectProperty<NullableStringProperty> DETECT_BDIO_FILE_NAME =
         new DetectProperty<>(new NullableStringProperty("detect.bdio.file.name"))
-            .setInfo("BDIO File Name", DetectPropertyFromVersion.VERSION_3_0_0)
+            .setInfo("BDIO File Name", DetectPropertyFromVersion.VERSION_7_9_0)
             .setHelp("The desired file name of the single bdio file Detect produces in the BDIO Output Directory.", "If not set, the file name is generated from your project, version and code location names.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
@@ -261,6 +264,14 @@ public class DetectProperties {
         new DetectProperty<>(new IntegerProperty("detect.bitbake.search.depth", 1))
             .setInfo("BitBake Search Depth", DetectPropertyFromVersion.VERSION_6_1_0)
             .setHelp("The depth at which Detect will search for files generated by Bitbake.")
+            .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN);
+
+    public static final DetectProperty<NoneEnumListProperty<BitbakeDependencyType>> DETECT_BITBAKE_DEPENDENCY_TYPES_EXCLUDED =
+        new DetectProperty<>(new NoneEnumListProperty<>("detect.bitbake.dependency.types.excluded", NoneEnum.NONE, BitbakeDependencyType.class))
+            .setInfo("Bitbake Excluded Dependency Types", DetectPropertyFromVersion.VERSION_7_10_0)
+            .setHelp("The dependency types to exclude from the results.",
+                "BUILD dependencies include recipes that are not declared in the license.manifest file, and native recipes.")
+            .setExample("BUILD")
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN);
 
     public static final DetectProperty<NullableStringProperty> DETECT_BLACKDUCK_SIGNATURE_SCANNER_ARGUMENTS =
@@ -544,8 +555,8 @@ public class DetectProperties {
             .setHelp("The path to the dotnet executable.")
             .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<FilterableEnumListProperty<DetectorType>> DETECT_EXCLUDED_DETECTOR_TYPES =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.excluded.detector.types", emptyList(), DetectorType.class))
+    public static final DetectProperty<AllNoneEnumListProperty<DetectorType>> DETECT_EXCLUDED_DETECTOR_TYPES =
+        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.excluded.detector.types", emptyList(), DetectorType.class))
             .setInfo("Detector Types Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "By default, all detectors will be included. If you want to exclude specific detectors, specify the ones to exclude here. If you want to exclude all detectors, specify \"ALL\". Exclusion rules always win.",
@@ -680,8 +691,8 @@ public class DetectProperties {
                 "If not set, the Impact Analysis reports are placed in a 'impact-analysis' subdirectory of the output directory.")
             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN);
 
-    public static final DetectProperty<FilterableEnumListProperty<DetectorType>> DETECT_INCLUDED_DETECTOR_TYPES =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.included.detector.types", emptyList(), DetectorType.class))
+    public static final DetectProperty<AllNoneEnumListProperty<DetectorType>> DETECT_INCLUDED_DETECTOR_TYPES =
+        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.included.detector.types", emptyList(), DetectorType.class))
             .setInfo("Detector Types Included", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "By default, all tools will be included. If you want to include only specific tools, specify the ones to include here. Exclusion rules always win.",
@@ -924,8 +935,9 @@ public class DetectProperties {
             .setHelp("The path to the Pipenv executable.")
             .setGroups(DetectGroup.PIP, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<FilterableEnumListProperty<DependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.pnpm.dependency.types", FilterableEnumUtils.allList(), DependencyType.class))
+    // TODO: In 8.0.0 this should be changed to a NoneEnumListProperty and PnpmDependencyType.APP should be removed as an option.
+    public static final DetectProperty<AllNoneEnumListProperty<PnpmDependencyType>> DETECT_PNPM_DEPENDENCY_TYPES =
+        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.pnpm.dependency.types", AllNoneEnum.ALL, PnpmDependencyType.class))
             .setInfo("pnpm Dependency Types", DetectPropertyFromVersion.VERSION_7_8_0)
             .setHelp("Set this value to indicate which types of pnpm dependencies you want Detect to report.",
                 "If you want Detect to report a specific type(s) of dependencies, pass a comma-separated list of such types (ex. APP, DEV, OPTIONAL).  By default, all types will be reported.")
@@ -937,9 +949,9 @@ public class DetectProperties {
             .setHelp("Path of the swift executable.")
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<FilterableEnumListProperty<PolicyRuleSeverityType>> DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES =
+    public static final DetectProperty<AllNoneEnumListProperty<PolicyRuleSeverityType>> DETECT_POLICY_CHECK_FAIL_ON_SEVERITIES =
         new DetectProperty<>(
-            new FilterableEnumListProperty<>("detect.policy.check.fail.on.severities", FilterableEnumUtils.noneList(), PolicyRuleSeverityType.class))
+            new AllNoneEnumListProperty<>("detect.policy.check.fail.on.severities", AllNoneEnum.NONE, PolicyRuleSeverityType.class))
             .setInfo("Fail on Policy Violation Severities", DetectPropertyFromVersion.VERSION_3_0_0)
             .setHelp(
                 "A comma-separated list of policy violation severities that will fail Detect. If this is set to NONE, Detect will not fail due to policy violations. A value of ALL is equivalent to all of the other possible values except NONE.")
@@ -964,7 +976,8 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.custom.fields.project"))
             .setInfo("Custom Fields", DetectPropertyFromVersion.VERSION_5_6_0)
             .setHelp(
-                "A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example, to set a custom field with label 'example' to 'one,two': `detect.custom.fields.project[0].label='example'` and `detect.custom.fields.project[0].value='one,two'`. To set another field, use index 1. Note that these will not show up in the detect configuration log.")
+                "A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example, to set a custom field with label 'example' to 'one,two': `detect.custom.fields.project[0].label='example'` and `detect.custom.fields.project[0].value='one,two'`. To set another field, use index 1. Note that these will not show up in the detect configuration log.",
+                "When assigning a value that contains a comma to a single-value field such as a text field, append '[0]' to the end of the value property name. For example, to set the value of the first field you are setting ('detect.custom.fields.version[0]') to 'text1,text2', use 'detect.custom.fields.version[0].value[0]=text1,text2'.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
@@ -973,13 +986,14 @@ public class DetectProperties {
         new DetectProperty<>(new NullableStringProperty("detect.custom.fields.version"))
             .setInfo("Custom Fields", DetectPropertyFromVersion.VERSION_5_6_0)
             .setHelp(
-                "A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example , to set a custom field with label 'example' to 'one,two': `detect.custom.fields.version[0].label='example'` and `detect.custom.fields.version[0].value='one,two'`. To set another field, use index 1. Note that these will not show up in the detect configuration log.")
+                "A  list of custom fields with a label and comma-separated value starting from index 0. For each index, provide one label and one value. For example , to set a custom field with label 'example' to 'one,two': `detect.custom.fields.version[0].label='example'` and `detect.custom.fields.version[0].value='one,two'`. To set another field, use index 1. Note that these will not show up in the detect configuration log.",
+                "When assigning a value that contains a comma to a single-value field such as a text field, append '[0]' to the end of the value property name. For example, to set the value of the first field you are setting ('detect.custom.fields.version[0]') to 'text1,text2', use 'detect.custom.fields.version[0].value[0]=text1,text2'.")
             .setGroups(DetectGroup.PROJECT, DetectGroup.PROJECT_SETTING)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<FilterableEnumListProperty<ProjectCloneCategoriesType>> DETECT_PROJECT_CLONE_CATEGORIES =
+    public static final DetectProperty<AllNoneEnumListProperty<ProjectCloneCategoriesType>> DETECT_PROJECT_CLONE_CATEGORIES =
         new DetectProperty<>(
-            new FilterableEnumListProperty<>("detect.project.clone.categories", singletonList(FilterableEnumValue.allValue()), ProjectCloneCategoriesType.class))
+            new AllNoneEnumListProperty<>("detect.project.clone.categories", AllNoneEnum.ALL, ProjectCloneCategoriesType.class))
             .setInfo("Clone Project Categories", DetectPropertyFromVersion.VERSION_4_2_0)
             .setHelp(
                 "The value of this property is used to set the 'Cloning' settings on created Black Duck projects. If property detect.project.version.update is set to true, the value of this property is used to set the 'Cloning' settings on updated Black Duck projects.")
@@ -1249,8 +1263,8 @@ public class DetectProperties {
             .setGroups(DetectGroup.BLACKDUCK_SERVER, DetectGroup.BLACKDUCK, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced);
 
-    public static final DetectProperty<FilterableEnumListProperty<DetectTool>> DETECT_TOOLS =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.tools", emptyList(), DetectTool.class))
+    public static final DetectProperty<AllNoneEnumListProperty<DetectTool>> DETECT_TOOLS =
+        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.tools", emptyList(), DetectTool.class))
             .setInfo("Detect Tools Included", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp(
                 "The tools Detect should allow in a comma-separated list. Tools in this list (as long as they are not also in the excluded list) will be allowed to run if all criteria of the tool are met. Exclusion rules always win.",
@@ -1258,8 +1272,8 @@ public class DetectProperties {
             )
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL);
 
-    public static final DetectProperty<FilterableEnumListProperty<DetectTool>> DETECT_TOOLS_EXCLUDED =
-        new DetectProperty<>(new FilterableEnumListProperty<>("detect.tools.excluded", emptyList(), DetectTool.class))
+    public static final DetectProperty<AllNoneEnumListProperty<DetectTool>> DETECT_TOOLS_EXCLUDED =
+        new DetectProperty<>(new AllNoneEnumListProperty<>("detect.tools.excluded", emptyList(), DetectTool.class))
             .setInfo("Detect Tools Excluded", DetectPropertyFromVersion.VERSION_5_0_0)
             .setHelp(
                 "The tools Detect should not allow, in a comma-separated list. Excluded tools will not be run even if all criteria for the tool is met. Exclusion rules always win.",
@@ -1421,6 +1435,14 @@ public class DetectProperties {
             .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
             .setCategory(DetectCategory.Advanced)
             .setDeprecated("This property is being removed. The legacy maven buildless parser is being replaced by the project inspector.", DetectMajorVersion.EIGHT);
+
+    @Deprecated
+    public static final DetectProperty<BooleanProperty> DETECT_CONAN_INCLUDE_BUILD_DEPENDENCIES =
+        new DetectProperty<>(new BooleanProperty("detect.conan.include.build.dependencies", true))
+            .setInfo("Include Conan Build Dependencies", DetectPropertyFromVersion.VERSION_6_8_0)
+            .setHelp("Set this value to false if you would like to exclude your project's build dependencies.")
+            .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
+            .setDeprecated("This property is being removed in favor of detect.conan.dependency.types.excluded. If the replacement property is set, this property is ignored.", DetectMajorVersion.EIGHT);
 
     // Accessor to get all properties
     public static Properties allProperties() throws IllegalAccessException {
