@@ -187,16 +187,27 @@ public class DetectableOptionFactory {
     }
 
     public LernaOptions createLernaOptions() {
-        boolean includePrivate = Boolean.TRUE.equals(getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE));
+        List<LernaDependencyType> excludedDependencyTypes;
         if (detectConfiguration.wasPropertyProvided(DetectProperties.DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED.getProperty())) {
-            List<LernaDependencyType> excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
-            ExcludedDependencyTypeFilter<LernaDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
-            includePrivate = dependencyTypeFilter.shouldReportDependencyType(LernaDependencyType.PRIVATE);
+            excludedDependencyTypes = PropertyConfigUtils.getNoneList(detectConfiguration, DetectProperties.DETECT_LERNA_DEPENDENCY_TYPES_EXCLUDED.getProperty()).representedValues();
+        } else {
+            excludedDependencyTypes = new LinkedList<>();
+            if (Boolean.TRUE.equals(getValue(DetectProperties.DETECT_LERNA_INCLUDE_PRIVATE))) {
+                excludedDependencyTypes.add(LernaDependencyType.PRIVATE);
+            }
+            NpmDependencyTypeOptions npmDependencyTypeOptions = createNpmDependencyTypeOptions();
+            if (!npmDependencyTypeOptions.includeDevDependencies) {
+                excludedDependencyTypes.add(LernaDependencyType.DEV);
+            }
+            if (!npmDependencyTypeOptions.includePeerDependencies) {
+                excludedDependencyTypes.add(LernaDependencyType.PEER);
+            }
         }
+        ExcludedDependencyTypeFilter<LernaDependencyType> dependencyTypeFilter = new ExcludedDependencyTypeFilter<>(excludedDependencyTypes);
 
         List<String> excludedPackages = getValue(DetectProperties.DETECT_LERNA_EXCLUDED_PACKAGES);
         List<String> includedPackages = getValue(DetectProperties.DETECT_LERNA_INCLUDED_PACKAGES);
-        return new LernaOptions(includePrivate, excludedPackages, includedPackages);
+        return new LernaOptions(dependencyTypeFilter, excludedPackages, includedPackages);
     }
 
     public MavenCliExtractorOptions createMavenCliOptions() {

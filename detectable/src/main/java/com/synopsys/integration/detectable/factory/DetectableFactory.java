@@ -479,8 +479,8 @@ public class DetectableFactory {
         return new YarnLockDetectable(environment, fileFinder, yarnLockExtractor(yarnLockOptions));
     }
 
-    public LernaDetectable createLernaDetectable(DetectableEnvironment environment, LernaResolver lernaResolver, NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
-        return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor(npmLockfileOptions, yarnLockOptions, lernaOptions));
+    public LernaDetectable createLernaDetectable(DetectableEnvironment environment, LernaResolver lernaResolver, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
+        return new LernaDetectable(environment, fileFinder, lernaResolver, lernaExtractor(yarnLockOptions, lernaOptions));
     }
 
     public XcodeSwiftDetectable createXcodeSwiftDetectable(DetectableEnvironment environment) {
@@ -1000,12 +1000,12 @@ public class DetectableFactory {
         return new LernaPackageDiscoverer(executableRunner, gson);
     }
 
-    private LernaPackager lernaPackager(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
-        return new LernaPackager(fileFinder, packageJsonReader(), yarnLockParser(), yarnLockOptions, npmLockfilePackager(), npmLockfileOptions, yarnPackager(), lernaOptions);
+    private LernaPackager lernaPackager(YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
+        return new LernaPackager(fileFinder, packageJsonReader(), yarnLockParser(), yarnLockOptions, npmLockfilePackager(), yarnPackager(), lernaOptions);
     }
 
-    private LernaExtractor lernaExtractor(NpmLockfileOptions npmLockfileOptions, YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
-        return new LernaExtractor(lernaPackageDiscoverer(), lernaPackager(npmLockfileOptions, yarnLockOptions, lernaOptions), lernaOptions);
+    private LernaExtractor lernaExtractor(YarnLockOptions yarnLockOptions, LernaOptions lernaOptions) {
+        return new LernaExtractor(lernaPackageDiscoverer(), lernaPackager(yarnLockOptions, lernaOptions), lernaOptions);
     }
 
     //#endregion Utility
