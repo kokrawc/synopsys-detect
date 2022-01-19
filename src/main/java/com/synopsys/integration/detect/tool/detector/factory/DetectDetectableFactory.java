@@ -31,6 +31,7 @@ import com.synopsys.integration.detectable.detectables.go.vendor.GoVendorDetecta
 import com.synopsys.integration.detectable.detectables.go.vendr.GoVndrDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.inspection.GradleDetectable;
 import com.synopsys.integration.detectable.detectables.gradle.parsing.GradleProjectInspectorDetectable;
+import com.synopsys.integration.detectable.detectables.ivy.parse.IvyParseDetectable;
 import com.synopsys.integration.detectable.detectables.lerna.LernaDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomDetectable;
 import com.synopsys.integration.detectable.detectables.maven.cli.MavenPomWrapperDetectable;
@@ -70,8 +71,8 @@ public class DetectDetectableFactory {
     private final ProjectInspectorResolver projectInspectorResolver;
 
     public DetectDetectableFactory(DetectableFactory detectableFactory, DetectableOptionFactory detectableOptionFactory, DetectExecutableResolver detectExecutableResolver,
-        DockerInspectorResolver dockerInspectorResolver, GradleInspectorResolver gradleInspectorResolver, NugetInspectorResolver nugetInspectorResolver,
-        PipInspectorResolver pipInspectorResolver, ProjectInspectorResolver projectInspectorResolver) {
+                                   DockerInspectorResolver dockerInspectorResolver, GradleInspectorResolver gradleInspectorResolver, NugetInspectorResolver nugetInspectorResolver,
+                                   PipInspectorResolver pipInspectorResolver, ProjectInspectorResolver projectInspectorResolver) {
         this.detectableFactory = detectableFactory;
         this.detectableOptionFactory = detectableOptionFactory;
         this.detectExecutableResolver = detectExecutableResolver;
@@ -166,6 +167,10 @@ public class DetectDetectableFactory {
         return detectableFactory.createGemspecParseDetectable(environment, detectableOptionFactory.createGemspecParseDetectableOptions());
     }
 
+    public IvyParseDetectable createIvyParseDetectable(DetectableEnvironment environment) {
+        return detectableFactory.createIvyParseDetectable(environment);
+    }
+
     public MavenPomDetectable createMavenPomDetectable(DetectableEnvironment environment) {
         return detectableFactory.createMavenPomDetectable(environment, detectExecutableResolver, detectableOptionFactory.createMavenCliOptions());
     }
@@ -227,7 +232,7 @@ public class DetectDetectableFactory {
     }
 
     public PnpmLockDetectable createPnpmLockDetectable(DetectableEnvironment environment) {
-        return detectableFactory.createPnpmLockDetectable(environment, detectableOptionFactory.createPnpmDependencyTypes());
+        return detectableFactory.createPnpmLockDetectable(environment, detectableOptionFactory.createPnpmLockOptions());
     }
 
     public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {
