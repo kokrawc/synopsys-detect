@@ -49,6 +49,26 @@ public class ModelTests {
     }
 
     @Test
+    public void parsesDependencyGroupsWithSpace() {
+        String lockfile = "{ \"projectFileDependencyGroups\": {\n"
+            + "    \"\": [],\n"
+            + "    \"UAP,Version=v10.0\": [\n"
+            + "      \"MySpecialProject with space in name >= 1.0.0\""
+            + "    ]\n"
+            + "  } }";
+
+        NuGetLockFile lockFile = new LockFileParser(new Gson()).parse(lockfile);
+        Assertions.assertEquals(2, lockFile.projectFileDependencyGroups.size());
+
+        List<String> group1 = lockFile.projectFileDependencyGroups.get("");
+        Assertions.assertEquals(0, group1.size());
+
+        List<String> group2 = lockFile.projectFileDependencyGroups.get("UAP,Version=v10.0");
+        Assertions.assertEquals(1, group2.size());
+        Assertions.assertEquals("MySpecialProject with space in name >= 1.0.0", group2.get(0));
+    }
+
+    @Test
     void parsesProjectRestoreFrameworks() {
         String lockfile = "{ \"project\": { \n"
             + "  \"restore\": {\n"
@@ -85,6 +105,19 @@ public class ModelTests {
         NuGetLockFile lockFile = new LockFileParser(new Gson()).parse(lockfile);
 
         Assertions.assertEquals("SmartHive.LevelMapApp.UWP", lockFile.project.restore.projectName);
+    }
+
+    @Test
+    void parsesProjectNameWithSpaceFromRestore() {
+        String lockfile = "{ \"project\": {\n"
+            + "    \"restore\": {\n"
+            + "      \"projectName\": \"Project With Space\"\n"
+            + "    }\n"
+            + "}}";
+
+        NuGetLockFile lockFile = new LockFileParser(new Gson()).parse(lockfile);
+
+        Assertions.assertEquals("Project With Space", lockFile.project.restore.projectName);
     }
 
     @Test
