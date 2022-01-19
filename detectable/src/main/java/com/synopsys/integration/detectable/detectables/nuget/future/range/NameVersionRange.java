@@ -8,4 +8,12 @@ public class NameVersionRange {
         this.name = name;
         this.versionRange = versionRange;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public NuGetVersionRange getVersionRange() {
+        return versionRange;
+    }
 }

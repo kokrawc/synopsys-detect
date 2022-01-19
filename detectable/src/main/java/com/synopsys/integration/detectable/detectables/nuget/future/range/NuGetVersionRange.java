@@ -4,8 +4,6 @@ import javax.annotation.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 
-import de.skuzzle.semantic.Version;
-
 public class NuGetVersionRange {
     private final boolean includeMinVersion;
     @Nullable
@@ -35,7 +33,7 @@ public class NuGetVersionRange {
     }
 
     public static NuGetVersionRange forMinimumInclusive(NuGetVersion version) {
-        return new NuGetVersionRange(version, true, version, true, null, null);
+        return new NuGetVersionRange(version, true, null, false, null, null);
     }
 
     public static NuGetVersionRange forMinimumExclusive(NuGetVersion version) {
@@ -88,5 +86,32 @@ public class NuGetVersionRange {
         }
 
         return condition;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        NuGetVersionRange that = (NuGetVersionRange) o;
+
+        if (includeMinVersion != that.includeMinVersion)
+            return false;
+        if (includeMaxVersion != that.includeMaxVersion)
+            return false;
+        if (minVersion != null ? !minVersion.equals(that.minVersion) : that.minVersion != null)
+            return false;
+        return maxVersion != null ? maxVersion.equals(that.maxVersion) : that.maxVersion == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (includeMinVersion ? 1 : 0);
+        result = 31 * result + (minVersion != null ? minVersion.hashCode() : 0);
+        result = 31 * result + (includeMaxVersion ? 1 : 0);
+        result = 31 * result + (maxVersion != null ? maxVersion.hashCode() : 0);
+        return result;
     }
 }

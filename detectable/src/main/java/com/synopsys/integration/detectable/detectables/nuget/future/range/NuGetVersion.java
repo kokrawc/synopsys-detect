@@ -1,10 +1,11 @@
 package com.synopsys.integration.detectable.detectables.nuget.future.range;
 
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-
-import de.skuzzle.semantic.Version;
+import org.jetbrains.annotations.NotNull;
 
 public class NuGetVersion {
     private final SimpleVersion version;
@@ -17,7 +18,7 @@ public class NuGetVersion {
     private final String buildmetaData;
     private final String originalVersion;
 
-    public NuGetVersion(SimpleVersion version, String[] releaseLabels, String buildmetaData, String originalVersion) {
+    public NuGetVersion(SimpleVersion version, String[] releaseLabels, @NotNull String buildmetaData, String originalVersion) {
         this.version = version;
         this.releaseLabels = releaseLabels;
         this.buildmetaData = buildmetaData;
@@ -189,6 +190,39 @@ public class NuGetVersion {
 
     public SimpleVersion getVersion() {
         return version;
+    }
+
+    public String getBuildmetaData() {
+        return buildmetaData;
+    }
+
+    public String getOriginalVersion() {
+        return originalVersion;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        NuGetVersion that = (NuGetVersion) o;
+
+        if (version != null ? !version.equals(that.version) : that.version != null)
+            return false;
+        // Probably incorrect - comparing Object[] arrays with Arrays.equals
+        if (!Arrays.equals(releaseLabels, that.releaseLabels))
+            return false;
+        return buildmetaData != null ? buildmetaData.equals(that.buildmetaData) : that.buildmetaData == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = version != null ? version.hashCode() : 0;
+        result = 31 * result + Arrays.hashCode(releaseLabels);
+        result = 31 * result + (buildmetaData != null ? buildmetaData.hashCode() : 0);
+        return result;
     }
 
     private static class NuGetSections {

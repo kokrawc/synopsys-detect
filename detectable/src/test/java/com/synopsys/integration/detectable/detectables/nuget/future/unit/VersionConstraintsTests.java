@@ -8,8 +8,6 @@ import com.synopsys.integration.detectable.detectables.nuget.future.range.NuGetV
 import com.synopsys.integration.detectable.detectables.nuget.future.range.NuGetVersionRangeParser;
 import com.synopsys.integration.detectable.detectables.nuget.future.range.SimpleVersion;
 
-import de.skuzzle.semantic.Version;
-
 public class VersionConstraintsTests {
 
     @Test

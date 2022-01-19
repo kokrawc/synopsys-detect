@@ -9,8 +9,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.skuzzle.semantic.Version;
-
 public class NuGetVersionExpressionParser {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
