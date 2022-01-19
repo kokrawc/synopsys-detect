@@ -38,16 +38,16 @@ public class VersionCompareTests {
             DynamicTest.dynamicTest("Build: Three is less than four.",
                 () -> assertLess(buildVersion(1, 1, 3), buildVersion(1, 1, 4))),
             DynamicTest.dynamicTest("Build: Six is more than two.",
-                () -> assertGreater(buildVersion(1, 1, 6), buildVersion(1, 1, 2))),
+                () -> assertGreater(buildVersion(2, 2, 6), buildVersion(2, 2, 2))),
             DynamicTest.dynamicTest("Build: Three equals three.",
-                () -> assertEquals(buildVersion(1, 1, 3), buildVersion(1, 1, 3))),
+                () -> assertEquals(buildVersion(3, 3, 3), buildVersion(3, 3, 3))),
 
             DynamicTest.dynamicTest("Revision: Three is less than four.",
                 () -> assertLess(version(1, 1, 1, 3), version(1, 1, 1, 4))),
             DynamicTest.dynamicTest("Revision: Six is more than two.",
-                () -> assertGreater(version(1, 1, 1, 6), version(1, 1, 1, 2))),
+                () -> assertGreater(version(2, 2, 2, 6), version(2, 2, 3, 2))),
             DynamicTest.dynamicTest("Revision: Three equals three.",
-                () -> assertEquals(version(1, 1, 1, 3), version(1, 1, 1, 3)))
+                () -> assertEquals(version(3, 3, 3, 3), version(3, 3, 3, 3)))
         );
     }
 
