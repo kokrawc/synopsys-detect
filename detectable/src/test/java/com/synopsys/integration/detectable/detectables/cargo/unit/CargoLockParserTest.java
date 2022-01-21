@@ -101,4 +101,47 @@ public class CargoLockParserTest {
         Assertions.assertThrows(DetectableException.class, () -> cargoLockParser.parseLockFile(input));
 
     }
+
+    @Test
+    public void testHandleMultipleVersionsOfSamePackage() throws DetectableException {
+        String input = String.join(System.lineSeparator(), Arrays.asList(
+            "[[package]]",
+            "name = \"test1\"",
+            "version = \"1.0.0\"",
+            "dependencies = [",
+            "\"dep1\",",
+            "\"dep2 0.5.0\"",
+            "]",
+            "",
+            "[[package]]",
+            "name = \"dep1\"",
+            "version = \"0.5.0\"",
+            "dependencies = [",
+            "\"dep2 0.6.0\"",
+            "]",
+            "",
+            "[[package]]",
+            "name = \"dep2\"",
+            "version = \"0.6.0\"",
+            "",
+            "[[package]]",
+            "name = \"dep2\"",
+            "version = \"0.5.0\"",
+            "",
+            "[[package]]",
+            "name = \"dep2\"",
+            "version = \"0.4.0\""
+        ));
+        CargoLockParser cargoLockParser = new CargoLockParser();
+        DependencyGraph graph = cargoLockParser.parseLockFile(input);
+
+        NameVersionGraphAssert graphAssert = new NameVersionGraphAssert(Forge.CRATES, graph);
+        graphAssert.hasRootSize(2);
+
+        graphAssert.hasRootDependency("dep2", "0.4.0");
+        graphAssert.hasRootDependency("test1", "1.0.0");
+        graphAssert.hasParentChildRelationship("test1", "1.0.0", "dep1", "0.5.0");
+        graphAssert.hasParentChildRelationship("test1", "1.0.0", "dep2", "0.5.0");
+        graphAssert.hasParentChildRelationship("dep1", "0.5.0", "dep2", "0.6.0");
+    }
 }

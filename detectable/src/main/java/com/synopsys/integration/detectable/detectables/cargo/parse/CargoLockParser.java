@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.moandjiezana.toml.Toml;
 import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.MutableDependencyGraph;
@@ -29,7 +31,9 @@ public class CargoLockParser {
         try {
             CargoLock cargoLock = new Toml().read(lockFile).to(CargoLock.class);
             if (cargoLock.getPackages().isPresent()) {
-                return parseDependencies(cargoLock.getPackages().get());
+                return parseDependencies(cargoLock.getPackages().get().stream()
+                    .filter(p -> p.getName().isPresent())
+                    .collect(Collectors.toList()));
             }
         } catch (IllegalStateException e) {
             throw new DetectableException("Illegal syntax was detected in Cargo.lock file", e);
@@ -50,10 +54,10 @@ public class CargoLockParser {
             if (!lockPackage.getDependencies().isPresent()) {
                 continue;
             }
-            List<String> trimmedDependencies = extractDependencyNames(lockPackage.getDependencies().get());
-            for (String dependency : trimmedDependencies) {
+            List<String> dependencies = extractDependencyIds(lockPackage.getDependencies().get());
+            for (String dependency : dependencies) {
                 Dependency child = packageMap.get(dependency);
-                Dependency parent = packageMap.get(lockPackage.getName().orElse(""));
+                Dependency parent = packageMap.get(createPackageId(lockPackage.getName().get(), lockPackage.getVersion().orElse("")));
                 if (child != null && parent != null) {
                     graph.addChildWithParent(child, parent);
                 }
@@ -67,23 +71,46 @@ public class CargoLockParser {
         Set<String> dependencyPackages = new HashSet<>();
 
         for (Package lockPackage : lockPackages) {
-            String projectName = lockPackage.getName().orElse("");
-            String projectVersion = lockPackage.getVersion().orElse("");
+            String packageName = lockPackage.getName().get(); // we filtered out packages with no names
+            String packageVersion = lockPackage.getVersion().orElse("");
+            String packageId = createPackageId(packageName, packageVersion);
 
-            packageMap.put(projectName, createCargoDependency(projectName, projectVersion));
-            rootPackages.add(projectName);
+            Dependency dependency = createCargoDependency(packageName, packageVersion);
+            packageMap.put(packageId, dependency);
+            packageMap.put(packageName, dependency); // packages for which only one version is a project dependency may only be referenced by package name by other packages
+            rootPackages.add(packageId);
             lockPackage.getDependencies()
-                .map(this::extractDependencyNames)
+                .map(this::extractDependencyIds)
                 .ifPresent(dependencyPackages::addAll);
         }
-        rootPackages.removeAll(dependencyPackages);
+        return pruneRootPackages(rootPackages, dependencyPackages);
+    }
 
+    private Set<String> pruneRootPackages(Set<String> rootPackages, Set<String> packageDependencies) {
+        for (String packageDependency : packageDependencies) {
+            rootPackages = rootPackages.stream()
+                .filter(rootPackage -> !rootPackage.startsWith(packageDependency)) // filters dependency declaration for "package" and "package-version"
+                .collect(Collectors.toSet());
+        }
         return rootPackages;
     }
 
-    private List<String> extractDependencyNames(List<String> rawDependencies) {
+    private String createPackageId(String name, String version) {
+        if (StringUtils.isBlank(version)) {
+            return name;
+        }
+        return String.format("%s-%s", name, version);
+    }
+
+    private List<String> extractDependencyIds(List<String> rawDependencies) {
         return rawDependencies.stream()
-            .map(dependency -> dependency.split(" ")[0])
+            .map(dependency -> {
+                String[] pieces = dependency.split(" ");
+                if (pieces.length == 1) {
+                    return pieces[0]; // not all dependencies are declared with their versions
+                }
+                return createPackageId(pieces[0], pieces[1]);
+            })
             .collect(Collectors.toList());
     }
 
