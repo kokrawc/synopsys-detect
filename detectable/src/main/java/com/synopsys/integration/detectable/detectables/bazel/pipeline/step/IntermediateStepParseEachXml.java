@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.bazel.pipeline.step;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class IntermediateStepParseEachXml implements IntermediateStep {
@@ -34,7 +36,7 @@ public class IntermediateStepParseEachXml implements IntermediateStep {
     }
 
     @Override
-    public List<String> process(List<String> input) throws IntegrationException {
+    public List<String> process(File workspaceDir, ExecutableTarget bazelExe, List<String> input) throws IntegrationException {
         List<String> results = new ArrayList<>();
         for (String xmlDoc : input) {
             List<String> values;

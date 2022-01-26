@@ -19,17 +19,13 @@ import com.synopsys.integration.executable.ExecutableRunnerException;
 public class BazelCommandExecutor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final DetectableExecutableRunner executableRunner;
-    private final File workspaceDir;
-    private final ExecutableTarget bazelExe;
 
-    public BazelCommandExecutor(DetectableExecutableRunner executableRunner, File workspaceDir, ExecutableTarget bazelExe) {
+    public BazelCommandExecutor(DetectableExecutableRunner executableRunner) {
         this.executableRunner = executableRunner;
-        this.workspaceDir = workspaceDir;
-        this.bazelExe = bazelExe;
     }
 
-    public Optional<String> executeToString(List<String> args) throws IntegrationException {
-        ExecutableOutput executableOutput = execute(args);
+    public Optional<String> executeToString(File workspaceDir, ExecutableTarget bazelExe, List<String> args) throws IntegrationException {
+        ExecutableOutput executableOutput = execute(workspaceDir, bazelExe, args);
         String cmdStdErr = executableOutput.getErrorOutput();
         if (cmdStdErr != null && cmdStdErr.contains("ERROR")) {
             logger.warn(String.format("Bazel error: %s", cmdStdErr.trim()));
@@ -43,7 +39,7 @@ public class BazelCommandExecutor {
     }
 
     @NotNull
-    private ExecutableOutput execute(List<String> args) throws IntegrationException {
+    private ExecutableOutput execute(File workspaceDir, ExecutableTarget bazelExe, List<String> args) throws IntegrationException {
         logger.debug(String.format("Executing bazel with args: %s", args));
         ExecutableOutput targetDependenciesQueryResults;
         try {

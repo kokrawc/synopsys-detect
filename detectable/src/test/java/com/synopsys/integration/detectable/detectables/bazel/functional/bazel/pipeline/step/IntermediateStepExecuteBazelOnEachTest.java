@@ -32,12 +32,12 @@ public class IntermediateStepExecuteBazelOnEachTest {
         Mockito.when(bazelCmdExecutableOutput.getReturnCode()).thenReturn(0);
         Mockito.when(bazelCmdExecutableOutput.getStandardOutput()).thenReturn("@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar");
         Mockito.when(executableRunner.execute(Mockito.any(Executable.class))).thenReturn(bazelCmdExecutableOutput);
-        BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner, workspaceDir, bazelExe);
+        BazelCommandExecutor bazelCommandExecutor = new BazelCommandExecutor(executableRunner);
         BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("//:ProjectRunner", null);
         IntermediateStep executor = new IntermediateStepExecuteBazelOnEach(bazelCommandExecutor, bazelVariableSubstitutor, Arrays.asList("cquery", "filter(\\\"@.*:jar\\\", deps(${detect.bazel.target}))"), false);
         List<String> input = new ArrayList<>(0);
 
-        List<String> output = executor.process(input);
+        List<String> output = executor.process(workspaceDir, bazelExe, input);
 
         assertEquals(1, output.size());
         assertEquals("@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar", output.get(0));

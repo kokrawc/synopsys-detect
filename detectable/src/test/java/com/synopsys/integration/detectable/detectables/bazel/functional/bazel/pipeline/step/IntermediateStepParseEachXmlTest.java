@@ -34,7 +34,7 @@ public class IntermediateStepParseEachXmlTest {
         IntermediateStep intermediateStep = new IntermediateStepParseEachXml("/query/rule[@class='maven_jar']/string[@name='artifact']", "value");
         List<String> input = Arrays.asList(COMMONS_IO_XML, GUAVA_XML);
 
-        List<String> results = intermediateStep.process(input);
+        List<String> results = intermediateStep.process(null, null, input);
 
         assertEquals(2, results.size());
         assertEquals("org.apache.commons:commons-io:1.3.2", results.get(0));

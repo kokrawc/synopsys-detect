@@ -2,6 +2,7 @@ package com.synopsys.integration.detectable.detectables.bazel.functional.bazel.p
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import org.mockito.Mockito;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.dependency.Dependency;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
+import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectables.bazel.WorkspaceRule;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipeline;
 import com.synopsys.integration.detectable.detectables.bazel.pipeline.Pipelines;
@@ -277,14 +279,16 @@ class PipelinesTest {
 
     private List<Dependency> doTest(WorkspaceRule workspaceRule, List<String> expectedBazelCommandArgs, List<String> userProvidedCqueryAdditionalOptions, String input) throws IntegrationException {
         BazelCommandExecutor bazelCommandExecutor = Mockito.mock(BazelCommandExecutor.class);
-        Mockito.when(bazelCommandExecutor.executeToString(expectedBazelCommandArgs)).thenReturn(Optional.of(input));
+        File workspaceDir = Mockito.mock(File.class);
+        ExecutableTarget bazelExe = Mockito.mock(ExecutableTarget.class);
+        Mockito.when(bazelCommandExecutor.executeToString(workspaceDir, bazelExe, expectedBazelCommandArgs)).thenReturn(Optional.of(input));
         BazelVariableSubstitutor bazelVariableSubstitutor = new BazelVariableSubstitutor("/:testTarget", userProvidedCqueryAdditionalOptions);
 
         ExternalIdFactory externalIdFactory = new ExternalIdFactory();
         HaskellCabalLibraryJsonProtoParser haskellCabalLibraryJsonProtoParser = new HaskellCabalLibraryJsonProtoParser(new Gson());
         Pipelines pipelines = new Pipelines(bazelCommandExecutor, bazelVariableSubstitutor, externalIdFactory, haskellCabalLibraryJsonProtoParser);
         Pipeline pipeline = pipelines.get(workspaceRule);
-        return pipeline.run();
+        return pipeline.run(workspaceDir, bazelExe);
     }
 
     private static String createStandardOutput(String... outputLines) {

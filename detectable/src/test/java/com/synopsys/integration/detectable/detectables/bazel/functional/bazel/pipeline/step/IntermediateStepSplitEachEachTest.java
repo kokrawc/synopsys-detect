@@ -17,7 +17,7 @@ public class IntermediateStepSplitEachEachTest {
     public void test() throws IntegrationException {
         IntermediateStep intermediateStepSplitEach = new IntermediateStepSplitEach("\\s+");
         List<String> input = Arrays.asList("@org_apache_commons_commons_io//jar:jar\n@com_google_guava_guava//jar:jar");
-        List<String> output = intermediateStepSplitEach.process(input);
+        List<String> output = intermediateStepSplitEach.process(null, null, input);
         assertEquals(2, output.size());
         assertEquals("@org_apache_commons_commons_io//jar:jar", output.get(0));
         assertEquals("@com_google_guava_guava//jar:jar", output.get(1));

@@ -17,7 +17,7 @@ public class IntermediateStepReplaceInEachTest {
     public void testRemoveLeadingAtSign() throws IntegrationException {
         List<String> input = Arrays.asList("@org_apache_commons_commons_io//jar:jar", "@com_google_guava_guava//jar:jar");
         IntermediateStep intermediateStep = new IntermediateStepReplaceInEach("^@", "");
-        List<String> output = intermediateStep.process(input);
+        List<String> output = intermediateStep.process(null, null, input);
         assertEquals(2, output.size());
         assertEquals("org_apache_commons_commons_io//jar:jar", output.get(0));
         assertEquals("com_google_guava_guava//jar:jar", output.get(1));
@@ -27,7 +27,7 @@ public class IntermediateStepReplaceInEachTest {
     public void testRemoveTrailingJunk() throws IntegrationException {
         List<String> input = Arrays.asList("org_apache_commons_commons_io//jar:jar", "com_google_guava_guava//jar:jar");
         IntermediateStep intermediateStep = new IntermediateStepReplaceInEach("//.*", "");
-        List<String> output = intermediateStep.process(input);
+        List<String> output = intermediateStep.process(null, null, input);
         assertEquals(2, output.size());
         assertEquals("org_apache_commons_commons_io", output.get(0));
         assertEquals("com_google_guava_guava", output.get(1));
@@ -37,7 +37,7 @@ public class IntermediateStepReplaceInEachTest {
     public void testInsertPrefix() throws IntegrationException {
         List<String> input = Arrays.asList("org_apache_commons_commons_io", "com_google_guava_guava");
         IntermediateStep intermediateStep = new IntermediateStepReplaceInEach("^", "//external:");
-        List<String> output = intermediateStep.process(input);
+        List<String> output = intermediateStep.process(null, null, input);
         assertEquals(2, output.size());
         assertEquals("//external:org_apache_commons_commons_io", output.get(0));
         assertEquals("//external:com_google_guava_guava", output.get(1));
@@ -47,10 +47,10 @@ public class IntermediateStepReplaceInEachTest {
     public void testMavenInstallBuildOutputExtractMavenCoordinates() throws IntegrationException {
         List<String> input = Arrays.asList("  tags = [\"maven_coordinates=com.google.guava:guava:27.0-jre\"],");
         IntermediateStep intermediateStepOne = new IntermediateStepReplaceInEach("^\\s*tags\\s*\\s*=\\s*\\[\\s*\"maven_coordinates=", "");
-        List<String> stepOneOutput = intermediateStepOne.process(input);
+        List<String> stepOneOutput = intermediateStepOne.process(null, null, input);
 
         IntermediateStep intermediateStepTwo = new IntermediateStepReplaceInEach("\".*", "");
-        List<String> output = intermediateStepTwo.process(stepOneOutput);
+        List<String> output = intermediateStepTwo.process(null, null, stepOneOutput);
 
         assertEquals(1, output.size());
         assertEquals("com.google.guava:guava:27.0-jre", output.get(0));
@@ -61,8 +61,8 @@ public class IntermediateStepReplaceInEachTest {
         List<String> input = Arrays.asList("  tags = [\"__SOME_OTHER_TAG__\", \"maven_coordinates=com.company.thing:thing-common-client:2.100.0\"],", "  tags = [\"maven_coordinates=com.google.code.findbugs:jsr305:3.0.2\"],");
         IntermediateStep intermediateStep1 = new IntermediateStepReplaceInEach(".*\"maven_coordinates=", "");
         IntermediateStep intermediateStep2 = new IntermediateStepReplaceInEach("\".*", "");
-        List<String> intermediate = intermediateStep1.process(input);
-        List<String> output = intermediateStep2.process(intermediate);
+        List<String> intermediate = intermediateStep1.process(null, null, input);
+        List<String> output = intermediateStep2.process(null, null, intermediate);
 
         assertEquals(2, output.size());
         assertEquals("com.company.thing:thing-common-client:2.100.0", output.get(0));

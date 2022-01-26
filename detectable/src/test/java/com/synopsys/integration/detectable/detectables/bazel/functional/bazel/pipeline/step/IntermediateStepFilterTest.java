@@ -23,7 +23,7 @@ public class IntermediateStepFilterTest {
         IntermediateStep intermediateStep = new IntermediateStepFilter(".*maven_coordinates=.*");
 
         List<String> input = Arrays.asList(NAME_LINE, TAGS_LINE_MAVEN_COORDINATES);
-        List<String> output = intermediateStep.process(input);
+        List<String> output = intermediateStep.process(null, null, input);
         assertEquals(1, output.size());
         assertEquals(TAGS_LINE_MAVEN_COORDINATES, output.get(0));
     }
@@ -33,7 +33,7 @@ public class IntermediateStepFilterTest {
         IntermediateStep intermediateStep = new IntermediateStepFilter(".*maven_coordinates=.*");
 
         List<String> input = Arrays.asList(NAME_LINE, TAGS_LINE_OTHER);
-        List<String> output = intermediateStep.process(input);
+        List<String> output = intermediateStep.process(null, null, input);
         assertEquals(0, output.size());
     }
 
@@ -42,7 +42,7 @@ public class IntermediateStepFilterTest {
         IntermediateStep intermediateStep = new IntermediateStepFilter(".*maven_coordinates=.*");
 
         List<String> input = Arrays.asList(NAME_LINE, TAGS_LINE_MIXED);
-        List<String> output = intermediateStep.process(input);
+        List<String> output = intermediateStep.process(null, null, input);
         assertEquals(1, output.size());
         assertEquals(TAGS_LINE_MIXED, output.get(0));
     }
