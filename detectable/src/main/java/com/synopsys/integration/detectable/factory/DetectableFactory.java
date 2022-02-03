@@ -85,7 +85,12 @@ import com.synopsys.integration.detectable.detectables.clang.packagemanager.Clan
 import com.synopsys.integration.detectable.detectables.clang.packagemanager.ClangPackageManagerRunner;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockDetectable;
 import com.synopsys.integration.detectable.detectables.cocoapods.PodlockExtractor;
-import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockParser;
+import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodDataTransformer;
+import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodSourceParser;
+import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockDataTransformer;
+import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockNameParser;
+import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockTransformer;
+import com.synopsys.integration.detectable.detectables.cocoapods.parser.PodlockVersionParser;
 import com.synopsys.integration.detectable.detectables.conan.ConanCodeLocationGenerator;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetectable;
 import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliExtractor;
@@ -495,7 +500,13 @@ public class DetectableFactory {
     }
 
     public PodlockDetectable createPodLockDetectable(DetectableEnvironment environment) {
-        return new PodlockDetectable(environment, fileFinder, podlockExtractor());
+        PodlockNameParser nameParser = new PodlockNameParser();
+        PodlockVersionParser versionParser = new PodlockVersionParser();
+        PodSourceParser podSourceParser = new PodSourceParser(nameParser);
+        PodDataTransformer podDataTransformer = new PodDataTransformer(nameParser, versionParser);
+        PodlockDataTransformer podlockDataTransformer = new PodlockDataTransformer(podSourceParser, nameParser, podDataTransformer);
+        PodlockTransformer podlockTransformer = new PodlockTransformer(externalIdFactory);
+        return new PodlockDetectable(environment, fileFinder, new PodlockExtractor(podlockDataTransformer, podlockTransformer));
     }
 
     public PoetryDetectable createPoetryDetectable(DetectableEnvironment environment) {
@@ -589,14 +600,6 @@ public class DetectableFactory {
 
     private ClangExtractor clangExtractor() {
         return new ClangExtractor(executableRunner, dependencyFileDetailGenerator(), clangPackageDetailsTransformer(), compileCommandDatabaseParser(), forgeChooser());
-    }
-
-    private PodlockParser podlockParser() {
-        return new PodlockParser(externalIdFactory);
-    }
-
-    private PodlockExtractor podlockExtractor() {
-        return new PodlockExtractor(podlockParser());
     }
 
     private CondaListParser condaListParser() {

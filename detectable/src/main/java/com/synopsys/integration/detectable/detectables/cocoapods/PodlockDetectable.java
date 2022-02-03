@@ -1,6 +1,7 @@
 package com.synopsys.integration.detectable.detectables.cocoapods;
 
 import java.io.File;
+import java.io.IOException;
 
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
@@ -40,7 +41,7 @@ public class PodlockDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws IOException {
         return podlockExtractor.extract(foundPodlock);
     }
 

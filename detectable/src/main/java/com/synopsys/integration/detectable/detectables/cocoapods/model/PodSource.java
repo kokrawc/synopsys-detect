@@ -1,33 +1,31 @@
 package com.synopsys.integration.detectable.detectables.cocoapods.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Optional;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+import com.synopsys.integration.bdio.model.Forge;
+
 public class PodSource {
-    @JsonIgnore
-    private String name;
+    private final PodName podName;
+    private final Forge forge;
 
-    @JsonProperty(":git")
-    private String git;
-
-    @JsonProperty(":path")
-    private String path;
-
-    public String getName() {
-        return name;
+    public PodSource(PodName podName, Forge forge) {
+        this.podName = podName;
+        this.forge = forge;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public static PodSource of(PodName podName, Forge forge) {
+        return new PodSource(podName, forge);
     }
 
-    public String getGit() {
-        return git;
+    public static Optional<PodSource> ofOptional(PodName podName, Forge forge) {
+        return Optional.of(new PodSource(podName, forge));
     }
 
-    public String getPath() {
-        return path;
+    public PodName getPodName() {
+        return podName;
+    }
+
+    public Forge getForge() {
+        return forge;
     }
 }

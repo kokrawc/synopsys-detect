@@ -18,11 +18,13 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 //Black Duck Stream
 // TODO: Test this class.
 public class Bds<T> {
-    private Stream<T> stream;
+    protected Stream<T> stream;
 
     public Bds(Stream<T> stream) {
         this.stream = stream;
@@ -61,6 +63,10 @@ public class Bds<T> {
 
     public <R> Bds<R> map(Function<? super T, ? extends R> mapper) {
         return new Bds<>(stream.map(mapper));
+    }
+
+    public <R> Bdso<R> mapOptional(Function<? super T, Optional<R>> mapper) {
+        return new Bdso<>(stream.map(mapper));
     }
 
     public <R> Bds<R> flatMapStream(Function<? super T, ? extends Stream<? extends R>> mapper) {
@@ -103,8 +109,20 @@ public class Bds<T> {
         return new Bds<>(collection.entrySet().stream());
     }
 
-    public static <T> Bds<T> of(Collection<T> collection) {
+    public static <T> Bds<T> of(@NotNull Collection<T> collection) {
         return new Bds<>(collection.stream());
+    }
+
+    public static <T> Bds<T> ofOptional(@NotNull Optional<? extends Collection<T>> collection) {
+        return new Bds<>(collection.map(Collection::stream).orElse(Stream.of()));
+    }
+
+    public static <T> Bds<T> ofNullable(@Nullable Collection<T> collection) {
+        if (collection != null) {
+            return new Bds<>(collection.stream());
+        } else {
+            return new Bds<>(Stream.of());
+        }
     }
 
     public static <T> Bds<T> of(Optional<T> optional) {
@@ -135,4 +153,5 @@ public class Bds<T> {
     public static <T> Set<T> setOf(T... elements) {
         return new HashSet<>(Arrays.asList(elements));
     }
+
 }

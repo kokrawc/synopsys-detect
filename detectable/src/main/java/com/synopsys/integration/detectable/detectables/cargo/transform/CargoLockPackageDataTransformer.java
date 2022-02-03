@@ -1,10 +1,8 @@
 package com.synopsys.integration.detectable.detectables.cargo.transform;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
+import com.synopsys.integration.common.util.Bds;
 import com.synopsys.integration.detectable.detectables.cargo.data.CargoLockPackageData;
 import com.synopsys.integration.detectable.detectables.cargo.model.CargoLockPackage;
 import com.synopsys.integration.detectable.detectables.cargo.parse.CargoDependencyLineParser;
@@ -23,13 +21,9 @@ public class CargoLockPackageDataTransformer {
         String packageVersion = cargoLockPackageData.getVersion().orElse(null);
         NameVersion nameOptionalVersion = new NameVersion(packageName, packageVersion);
 
-        List<NameOptionalVersion> dependencies = cargoLockPackageData.getDependencies()
-            .map((List<String> dependencyLines) -> dependencyLines.stream()
-                .map(cargoDependencyLineParser::parseDependencyName)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList()))
-            .orElse(Collections.emptyList());
+        List<NameOptionalVersion> dependencies = Bds.ofOptional(cargoLockPackageData.getDependencies())
+            .mapOptional(cargoDependencyLineParser::parseDependencyName)
+            .toPresentList();
 
         return new CargoLockPackage(nameOptionalVersion, dependencies);
     }

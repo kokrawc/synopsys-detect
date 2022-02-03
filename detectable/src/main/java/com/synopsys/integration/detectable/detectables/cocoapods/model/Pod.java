@@ -1,37 +1,27 @@
 package com.synopsys.integration.detectable.detectables.cocoapods.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-
 public class Pod {
-    private String name;
-    private String cleanName;
-    private List<String> dependencies = new ArrayList<>();
+    private final PodName podName;
+    private final String podVersion;
+    private final List<PodName> dependencies;
 
-    public Pod() {
-    }
-
-    public Pod(String name) {
-        this.name = name;
-    }
-
-    @JsonAnySetter
-    public void setDynamicProperty(String name, List<String> dependencies) {
-        this.name = name;
+    public Pod(PodName podName, String podVersion, List<PodName> dependencies) {
+        this.podName = podName;
+        this.podVersion = podVersion;
         this.dependencies = dependencies;
     }
 
-    public String getName() {
-        return name;
+    public PodName getPodName() {
+        return podName;
     }
 
-    public String getCleanName() {
-        return cleanName;
+    public String getPodVersion() {
+        return podVersion;
     }
 
-    public List<String> getDependencies() {
+    public List<PodName> getDependencies() {
         return dependencies;
     }
 }

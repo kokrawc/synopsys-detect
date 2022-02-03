@@ -2,29 +2,26 @@ package com.synopsys.integration.detectable.detectables.cocoapods.model;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class PodfileLock {
-    @JsonProperty("PODS")
-    private List<Pod> pods;
+    private final List<PodName> dependencies;
+    private final List<PodSource> externalSources;
+    private final List<Pod> pods;
 
-    @JsonProperty("DEPENDENCIES")
-    private List<Pod> dependencies;
-
-    @JsonProperty("EXTERNAL SOURCES")
-    private ExternalSources externalSources;
-
-    public List<Pod> getPods() {
-        return pods;
+    public PodfileLock(List<PodName> dependencies, List<PodSource> externalSources, List<Pod> pods) {
+        this.dependencies = dependencies;
+        this.externalSources = externalSources;
+        this.pods = pods;
     }
 
-    public List<Pod> getDependencies() {
+    public List<PodName> getDependencies() {
         return dependencies;
     }
 
-    public ExternalSources getExternalSources() {
+    public List<PodSource> getExternalSources() {
         return externalSources;
+    }
+
+    public List<Pod> getPods() {
+        return pods;
     }
 }
