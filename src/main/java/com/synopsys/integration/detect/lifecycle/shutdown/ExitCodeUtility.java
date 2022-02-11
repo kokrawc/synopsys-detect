@@ -21,7 +21,7 @@ public class ExitCodeUtility {
 
         if (e instanceof DetectUserFriendlyException) {
             if (e.getCause() != null) {
-                logger.debug(e.getCause().getMessage(), e.getCause());
+                logger.debug(e.getCause().getMessage(), e.getCause()); //TODO- do we need to log here?
             }
             DetectUserFriendlyException friendlyException = (DetectUserFriendlyException) e;
             exceptionExitCodeType = friendlyException.getExitCodeType();
@@ -54,9 +54,6 @@ public class ExitCodeUtility {
         } else {
             logUnrecognizedException(e);
             exceptionExitCodeType = ExitCodeType.FAILURE_UNKNOWN_ERROR;
-        }
-        if (e.getMessage() != null) {
-            logger.error(e.getMessage());
         }
 
         return exceptionExitCodeType;

@@ -157,6 +157,7 @@ public class Application implements ApplicationRunner {
         } catch (Exception e) {
             logger.error("Detect boot failed.");
             logger.error("");
+            logger.error(e.getMessage());
             exitCodeManager.requestExitCode(e);
             logger.error("");
         }
@@ -174,6 +175,7 @@ public class Application implements ApplicationRunner {
         } else {
             logger.debug("Detect will NOT attempt to run.");
             detectBootResult.getException().ifPresent(exitCodeManager::requestExitCode);
+            //TODO- if publishing issue is insufficient (I think it is), should log error here
             detectBootResult.getException().ifPresent(e -> DetectIssue.publish(eventSystem, DetectIssueType.EXCEPTION, "Detect Boot Error", e.getMessage()));
         }
     }

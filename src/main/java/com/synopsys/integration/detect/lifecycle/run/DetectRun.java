@@ -75,7 +75,7 @@ public class DetectRun {
             }
         } catch (Exception e) {
             logger.error("Detect run failed: {}", getExceptionMessage(e));
-            logger.debug("An exception was thrown during the detect run.", e);
+            logger.debug("An exception was thrown during the detect run.", e); //TODO- this log seems unnecessary
             exitCodeManager.requestExitCode(e);
             checkForInterruptedException(e);
         } finally {
