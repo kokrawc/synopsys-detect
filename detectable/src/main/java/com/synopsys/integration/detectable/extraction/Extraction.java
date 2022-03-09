@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.detectable.util.OptionalNameOptionalVersion;
 import com.synopsys.integration.util.NameVersion;
 
 public class Extraction {
@@ -191,6 +192,11 @@ public class Extraction {
             return new Extraction(this);
         }
 
+        public Builder projectNameVersion(OptionalNameOptionalVersion nameVersion) {
+            nameVersion.getName().ifPresent(this::projectName);
+            nameVersion.getVersion().ifPresent(this::projectVersion);
+            return this;
+        }
     }
 
     public enum ExtractionResultType {

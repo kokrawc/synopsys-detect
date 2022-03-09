@@ -17,7 +17,6 @@ import com.synopsys.integration.detectable.detectables.conan.cli.ConanCliDetecta
 import com.synopsys.integration.detectable.detectables.conan.lockfile.ConanLockfileDetectable;
 import com.synopsys.integration.detectable.detectables.conda.CondaCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
-import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDetectable;
 import com.synopsys.integration.detectable.detectables.dart.pubspec.DartPubSpecLockDetectable;
 import com.synopsys.integration.detectable.detectables.docker.DockerDetectable;
@@ -45,6 +44,7 @@ import com.synopsys.integration.detectable.detectables.nuget.NugetProjectDetecta
 import com.synopsys.integration.detectable.detectables.nuget.NugetProjectInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.nuget.NugetSolutionDetectable;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectable;
+import com.synopsys.integration.detectable.detectables.packrat.PackratLockDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pip.inspector.PipInspectorDetectable;
 import com.synopsys.integration.detectable.detectables.pipenv.PipenvDetectable;

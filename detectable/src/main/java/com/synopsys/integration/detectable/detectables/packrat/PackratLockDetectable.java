@@ -1,7 +1,9 @@
-package com.synopsys.integration.detectable.detectables.cran;
+package com.synopsys.integration.detectable.detectables.packrat;
 
 import java.io.File;
+import java.io.IOException;
 
+import com.synopsys.integration.bdio.graph.builder.MissingExternalIdException;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -40,7 +42,7 @@ public class PackratLockDetectable extends Detectable {
     }
 
     @Override
-    public Extraction extract(ExtractionEnvironment extractionEnvironment) {
+    public Extraction extract(ExtractionEnvironment extractionEnvironment) throws IOException, MissingExternalIdException {
         return packratLockExtractor.extract(environment.getDirectory(), packratLockFile);
     }
 

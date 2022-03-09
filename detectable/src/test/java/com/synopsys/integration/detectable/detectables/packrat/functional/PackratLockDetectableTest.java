@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.cran.functional;
+package com.synopsys.integration.detectable.detectables.packrat.functional;
 
 import java.io.IOException;
 import java.nio.file.Paths;

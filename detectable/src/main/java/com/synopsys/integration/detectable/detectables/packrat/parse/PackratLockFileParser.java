@@ -1,4 +1,4 @@
-package com.synopsys.integration.detectable.detectables.cran.parse;
+package com.synopsys.integration.detectable.detectables.packrat.parse;
 
 import java.util.Arrays;
 import java.util.List;

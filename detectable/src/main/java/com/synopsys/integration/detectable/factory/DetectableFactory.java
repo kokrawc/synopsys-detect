@@ -108,10 +108,6 @@ import com.synopsys.integration.detectable.detectables.conda.parser.CondaListPar
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliDetectable;
 import com.synopsys.integration.detectable.detectables.cpan.CpanCliExtractor;
 import com.synopsys.integration.detectable.detectables.cpan.parse.CpanListParser;
-import com.synopsys.integration.detectable.detectables.cran.PackratLockDetectable;
-import com.synopsys.integration.detectable.detectables.cran.PackratLockExtractor;
-import com.synopsys.integration.detectable.detectables.cran.parse.PackratDescriptionFileParser;
-import com.synopsys.integration.detectable.detectables.cran.parse.PackratLockFileParser;
 import com.synopsys.integration.detectable.detectables.dart.PubSpecYamlNameVersionParser;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepDetectable;
 import com.synopsys.integration.detectable.detectables.dart.pubdep.DartPubDepsDetectableOptions;
@@ -199,6 +195,10 @@ import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDet
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockDetectableOptions;
 import com.synopsys.integration.detectable.detectables.packagist.ComposerLockExtractor;
 import com.synopsys.integration.detectable.detectables.packagist.parse.PackagistParser;
+import com.synopsys.integration.detectable.detectables.packrat.PackratLockDetectable;
+import com.synopsys.integration.detectable.detectables.packrat.PackratLockExtractor;
+import com.synopsys.integration.detectable.detectables.packrat.parse.PackratDescriptionFileParser;
+import com.synopsys.integration.detectable.detectables.packrat.parse.PackratLockFileParser;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectable;
 import com.synopsys.integration.detectable.detectables.pear.PearCliDetectableOptions;
 import com.synopsys.integration.detectable.detectables.pear.PearCliExtractor;
@@ -635,7 +635,8 @@ public class DetectableFactory {
             bazelDetectableOptions.getBazelCqueryAdditionalOptions()
         );
         BazelProjectNameGenerator bazelProjectNameGenerator = new BazelProjectNameGenerator();
-        return new BazelExtractor(executableRunner,
+        return new BazelExtractor(
+            executableRunner,
             externalIdFactory,
             bazelWorkspaceFileParser,
             workspaceRuleChooser,
