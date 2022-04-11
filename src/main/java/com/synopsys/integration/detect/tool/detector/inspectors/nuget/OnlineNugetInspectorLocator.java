@@ -6,8 +6,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
-import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
+import com.synopsys.integration.detect.artifact.InstalledToolLocator;
+import com.synopsys.integration.detect.artifact.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.function.ThrowingBiFunction;

@@ -9,8 +9,8 @@ import java.util.Set;
 import org.jetbrains.annotations.Nullable;
 
 import com.synopsys.integration.configuration.property.types.path.PathResolver;
+import com.synopsys.integration.detect.artifact.ArtifactoryConstants;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.NugetLocatorOptions;
-import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detect.workflow.diagnostic.DiagnosticSystem;
 import com.synopsys.integration.detectable.detectable.inspector.nuget.NugetInspectorOptions;
 import com.synopsys.integration.detectable.detectable.util.EnumListFilter;

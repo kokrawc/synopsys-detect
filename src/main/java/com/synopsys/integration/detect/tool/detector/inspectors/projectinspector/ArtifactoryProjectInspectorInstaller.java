@@ -6,9 +6,9 @@ import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import com.synopsys.integration.detect.artifact.ArtifactoryConstants;
+import com.synopsys.integration.detect.artifact.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.configuration.DetectInfo;
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
-import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.util.OperatingSystemType;

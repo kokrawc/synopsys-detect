@@ -3,11 +3,11 @@ package com.synopsys.integration.detect.lifecycle.run;
 import java.io.File;
 import java.util.Optional;
 
+import com.synopsys.integration.detect.artifact.ArtifactResolver;
+import com.synopsys.integration.detect.artifact.InstalledToolLocator;
+import com.synopsys.integration.detect.artifact.InstalledToolManager;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
-import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
-import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
-import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.font.AirGapFontLocator;

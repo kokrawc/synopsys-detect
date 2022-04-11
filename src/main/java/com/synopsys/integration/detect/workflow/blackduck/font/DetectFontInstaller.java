@@ -8,10 +8,10 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
-import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
-import com.synopsys.integration.detect.workflow.ArtifactResolver;
-import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
+import com.synopsys.integration.detect.artifact.ArtifactResolver;
+import com.synopsys.integration.detect.artifact.ArtifactoryConstants;
+import com.synopsys.integration.detect.artifact.InstalledToolLocator;
+import com.synopsys.integration.detect.artifact.InstalledToolManager;
 import com.synopsys.integration.exception.IntegrationException;
 import com.synopsys.integration.log.Slf4jIntLogger;
 import com.synopsys.integration.util.CommonZipExpander;

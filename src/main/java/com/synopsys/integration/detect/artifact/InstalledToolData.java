@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.cache;
+package com.synopsys.integration.detect.artifact;
 
 import java.util.Map;
 

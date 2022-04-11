@@ -7,9 +7,9 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.synopsys.integration.detect.artifact.ArtifactResolver;
+import com.synopsys.integration.detect.artifact.ArtifactoryConstants;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
-import com.synopsys.integration.detect.workflow.ArtifactResolver;
-import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class DockerInspectorInstaller {
@@ -22,7 +22,8 @@ public class DockerInspectorInstaller {
 
     public File installJar(File dockerDirectory, Optional<String> dockerVersion) throws IntegrationException, IOException, DetectUserFriendlyException {
         logger.info("Determining the location of the Docker inspector.");
-        String location = artifactResolver.resolveArtifactLocation(ArtifactoryConstants.ARTIFACTORY_URL,
+        String location = artifactResolver.resolveArtifactLocation(
+            ArtifactoryConstants.ARTIFACTORY_URL,
             ArtifactoryConstants.DOCKER_INSPECTOR_REPO,
             ArtifactoryConstants.DOCKER_INSPECTOR_PROPERTY,
             dockerVersion.orElse(""),

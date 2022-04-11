@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.workflow;
+package com.synopsys.integration.detect.artifact;
 
 public class ArtifactoryConstants {
     public static final String ARTIFACTORY_URL = "https://sig-repo.synopsys.com/";

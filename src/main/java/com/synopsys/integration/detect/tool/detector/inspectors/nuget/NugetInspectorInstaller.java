@@ -7,8 +7,8 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
-import com.synopsys.integration.detect.workflow.ArtifactoryConstants;
+import com.synopsys.integration.detect.artifact.ArtifactoryConstants;
+import com.synopsys.integration.detect.artifact.ArtifactoryZipInstaller;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
 
 public class NugetInspectorInstaller {

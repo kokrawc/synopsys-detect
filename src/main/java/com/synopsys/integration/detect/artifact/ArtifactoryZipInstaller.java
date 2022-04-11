@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.tool.detector.inspectors;
+package com.synopsys.integration.detect.artifact;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.detect.util.DetectZipUtil;
-import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.exception.IntegrationException;
 
 public class ArtifactoryZipInstaller {

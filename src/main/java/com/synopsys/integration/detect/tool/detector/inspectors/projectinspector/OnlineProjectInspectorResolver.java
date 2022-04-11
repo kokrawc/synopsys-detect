@@ -5,8 +5,8 @@ import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
-import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
+import com.synopsys.integration.detect.artifact.InstalledToolLocator;
+import com.synopsys.integration.detect.artifact.InstalledToolManager;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.ExecutableTarget;
 import com.synopsys.integration.detectable.detectable.exception.DetectableException;
@@ -40,6 +40,18 @@ public class OnlineProjectInspectorResolver implements com.synopsys.integration.
         File inspectorFile = null;
         if (!hasResolvedInspector) {
             hasResolvedInspector = true;
+
+            /* TODO: The dream.
+            ArtifactResult artifactResult = artifactoryResolver.getCurrentArtifactInfo("project_inspector");
+            ArtifactCache cache = cache.hasVersion(artifactResult); //could come from the tool installer.
+            if (cache.isDownloaded()) {
+                return cache.locate();
+            } else {
+                ArtifactInstall installation = artifactInstaller.install();
+                cache.save(installation);
+                return installation.locate();
+            } */
+
             File installDirectory = directoryManager.getPermanentDirectory(INSTALLED_TOOL_JSON_KEY);
             try {
                 inspectorFile = projectInspectorInstaller.install(installDirectory);

@@ -6,18 +6,19 @@ import java.util.Optional;
 import com.google.gson.Gson;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 import com.synopsys.integration.common.util.finder.FileFinder;
+import com.synopsys.integration.detect.artifact.ArtifactResolver;
+import com.synopsys.integration.detect.artifact.ArtifactoryZipInstaller;
+import com.synopsys.integration.detect.artifact.InstalledToolLocator;
+import com.synopsys.integration.detect.artifact.InstalledToolManager;
 import com.synopsys.integration.detect.configuration.DetectInfo;
 import com.synopsys.integration.detect.configuration.DetectUserFriendlyException;
 import com.synopsys.integration.detect.configuration.DetectableOptionFactory;
 import com.synopsys.integration.detect.lifecycle.run.singleton.BootSingletons;
 import com.synopsys.integration.detect.lifecycle.run.singleton.UtilitySingletons;
-import com.synopsys.integration.detect.tool.cache.InstalledToolLocator;
-import com.synopsys.integration.detect.tool.cache.InstalledToolManager;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableResolver;
 import com.synopsys.integration.detect.tool.detector.executable.DetectExecutableRunner;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryDockerInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryGradleInspectorResolver;
-import com.synopsys.integration.detect.tool.detector.inspectors.ArtifactoryZipInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.DockerInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.LocalPipInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.nuget.AirgapNugetInspectorLocator;
@@ -33,7 +34,6 @@ import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector
 import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ArtifactoryProjectInspectorInstaller;
 import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.OnlineProjectInspectorResolver;
 import com.synopsys.integration.detect.tool.detector.inspectors.projectinspector.ProjectInspectorExecutableLocator;
-import com.synopsys.integration.detect.workflow.ArtifactResolver;
 import com.synopsys.integration.detect.workflow.airgap.AirGapInspectorPaths;
 import com.synopsys.integration.detect.workflow.file.DirectoryManager;
 import com.synopsys.integration.detectable.detectable.inspector.GradleInspectorResolver;
@@ -85,7 +85,8 @@ public class DetectorFactory {
     }
 
     public DetectDetectableFactory detectDetectableFactory() throws DetectUserFriendlyException {
-        return new DetectDetectableFactory(detectableFactory(),
+        return new DetectDetectableFactory(
+            detectableFactory(),
             detectableOptionFactory,
             detectExecutableResolver,
             dockerInspectorResolver(),

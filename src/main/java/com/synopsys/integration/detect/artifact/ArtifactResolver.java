@@ -1,4 +1,4 @@
-package com.synopsys.integration.detect.workflow;
+package com.synopsys.integration.detect.artifact;
 
 import java.io.File;
 import java.io.IOException;
