@@ -207,6 +207,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.BAZEL, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Change to AllEnumListProperty. Perhaps change default to ALL. Add .deprecateNone(message)
     public static final AllNoneEnumListProperty<WorkspaceRule> DETECT_BAZEL_WORKSPACE_RULES =
         AllNoneEnumListProperty.newBuilder("detect.bazel.workspace.rules", emptyList(), WorkspaceRule.class)
             .setInfo("Bazel workspace rules", DetectPropertyFromVersion.VERSION_7_12_0)
@@ -248,6 +249,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Should the default change? Has KB matching of Conan projects improved? If so, this could change to 'true'.
     public static final BooleanProperty DETECT_CONAN_REQUIRE_PREV_MATCH =
         BooleanProperty.newBuilder("detect.conan.attempt.package.revision.match", false)
             .setInfo(
@@ -259,6 +261,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.CONAN, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Revise 'help' wording since we should be only producing 1 BDIO document per run in 8.0.0
     public static final NullablePathProperty DETECT_BDIO_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.bdio.output.path")
             .setInfo("BDIO Output Directory", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -293,6 +296,7 @@ public class DetectProperties {
             .setExample("*.jar")
             .build();
 
+    // TODO: Consider raising default search depth
     public static final IntegerProperty DETECT_BINARY_SCAN_SEARCH_DEPTH =
         IntegerProperty.newBuilder("detect.binary.scan.search.depth", 0)
             .setInfo("Binary Scan Search Depth", DetectPropertyFromVersion.VERSION_6_9_0)
@@ -301,6 +305,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.BINARY_SCANNER, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Consider removing environment sourcing code in 8.0.0. IDETECT-3167
     public static final StringProperty DETECT_BITBAKE_BUILD_ENV_NAME =
         StringProperty.newBuilder("detect.bitbake.build.env.name", "oe-init-build-env")
             .setInfo("BitBake Init Script Name", DetectPropertyFromVersion.VERSION_4_4_0)
@@ -308,6 +313,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Change to (Nullable?)StringProperty
     public static final StringListProperty DETECT_BITBAKE_PACKAGE_NAMES =
         StringListProperty.newBuilder("detect.bitbake.package.names", emptyList())
             .setInfo("BitBake Package Names", DetectPropertyFromVersion.VERSION_4_4_0)
@@ -315,6 +321,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Consider removing environment sourcing code in 8.0.0. IDETECT-3167
     public static final StringListProperty DETECT_BITBAKE_SOURCE_ARGUMENTS =
         StringListProperty.newBuilder("detect.bitbake.source.arguments", emptyList())
             .setInfo("BitBake Source Arguments", DetectPropertyFromVersion.VERSION_6_0_0)
@@ -322,6 +329,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.BITBAKE, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: The task-depends.dot should be in working directory now, should verify? Maybe keep if IDETECT-3167 is completed
     public static final IntegerProperty DETECT_BITBAKE_SEARCH_DEPTH =
         IntegerProperty.newBuilder("detect.bitbake.search.depth", 1)
             .setInfo("BitBake Search Depth", DetectPropertyFromVersion.VERSION_6_1_0)
@@ -350,6 +358,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL)
             .build();
 
+    // TODO: JP don't like it
     public static final NullableStringProperty PROJECT_INSPECTOR_ARGUMENTS =
         NullableStringProperty.newBuilder("detect.project.inspector.arguments")
             .setInfo("Project Inspector Additional Arguments", DetectPropertyFromVersion.VERSION_7_7_0)
@@ -358,6 +367,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Consider detect.blackduck.signature.scanner.search=COPYRIGHT,LICENSE,ALL,NONE
     public static final BooleanProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_COPYRIGHT_SEARCH =
         BooleanProperty.newBuilder("detect.blackduck.signature.scanner.copyright.search", false)
             .setInfo("Signature Scanner Copyright Search", DetectPropertyFromVersion.VERSION_6_4_0)
@@ -385,6 +395,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.SIGNATURE_SCANNER)
             .build();
 
+    // TODO: Consider detect.blackduck.signature.scanner.search=COPYRIGHT,LICENSE,ALL,NONE
     public static final BooleanProperty DETECT_BLACKDUCK_SIGNATURE_SCANNER_LICENSE_SEARCH =
         BooleanProperty.newBuilder("detect.blackduck.signature.scanner.license.search", false)
             .setInfo("Signature Scanner License Search", DetectPropertyFromVersion.VERSION_6_2_0)
@@ -437,6 +448,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.SIGNATURE_SCANNER, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Outta here!
     public static final BooleanProperty DETECT_BUILDLESS =
         BooleanProperty.newBuilder("detect.detector.buildless", false)
             .setInfo("Buildless Mode", DetectPropertyFromVersion.VERSION_5_4_0)
@@ -468,6 +480,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Currently misleading "base-name"
     public static final NullableStringProperty DETECT_CODE_LOCATION_NAME =
         NullableStringProperty.newBuilder("detect.code.location.name")
             .setInfo("Scan Name", DetectPropertyFromVersion.VERSION_4_0_0)
@@ -541,6 +554,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.DART, DetectGroup.DETECTOR, DetectGroup.GLOBAL)
             .build();
 
+    // TODO: Increase the depth. Ideally based on some kind of data
     public static final IntegerProperty DETECT_DETECTOR_SEARCH_DEPTH =
         IntegerProperty.newBuilder("detect.detector.search.depth", 0)
             .setInfo("Detector Search Depth", DetectPropertyFromVersion.VERSION_3_2_0)
@@ -551,6 +565,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.DETECTOR, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Consider changing to ENUM for future nesting control
     public static final BooleanProperty DETECT_DETECTOR_SEARCH_CONTINUE =
         BooleanProperty.newBuilder("detect.detector.search.continue", false)
             .setInfo("Detector Search Continue", DetectPropertyFromVersion.VERSION_3_2_0)
@@ -578,6 +593,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.DEBUG, DetectGroup.GLOBAL)
             .build();
 
+    // TODO: Remove mentions of Polaris. The property potentially still has relevance.
     public static final BooleanProperty DETECT_IGNORE_CONNECTION_FAILURES =
         BooleanProperty.newBuilder("detect.ignore.connection.failures", false)
             .setInfo("Detect Ignore Connection Failures", DetectPropertyFromVersion.VERSION_5_3_0)
@@ -589,6 +605,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Consider the script using this property. New Jira ticket please
     public static final PassthroughProperty PHONEHOME_PASSTHROUGH =
         PassthroughProperty.newBuilder("detect.phone.home.passthrough")
             .setInfo("Phone Home Passthrough", DetectPropertyFromVersion.VERSION_6_0_0)
@@ -597,6 +614,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: This could go away if we more tightly integrated Docker Inspector code within Detect. Yuuuge effort
     public static final PassthroughProperty DOCKER_PASSTHROUGH =
         PassthroughProperty.newBuilder("detect.docker.passthrough")
             .setInfo("Docker Passthrough", DetectPropertyFromVersion.VERSION_6_0_0)
@@ -649,6 +667,7 @@ public class DetectProperties {
             .setExample("9.1.1")
             .build();
 
+    // TODO: Remove in 8.0.0. This is never really used, could have been a bad sign if it wasn't there.
     public static final NullablePathProperty DETECT_DOCKER_PATH =
         NullablePathProperty.newBuilder("detect.docker.path")
             .setInfo("Docker Executable", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -657,6 +676,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.DOCKER, DetectGroup.GLOBAL)
             .build();
 
+    // TODO: Remove in 8.0.0. Maybe get rid of this? Docker Inspector doesn't require Docker executable
     public static final BooleanProperty DETECT_DOCKER_PATH_REQUIRED =
         BooleanProperty.newBuilder("detect.docker.path.required", false)
             .setInfo("Run Without Docker in Path", DetectPropertyFromVersion.VERSION_4_0_0)
@@ -688,6 +708,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.DOCKER, DetectGroup.SOURCE_PATH)
             .build();
 
+    // TODO: Should go away with new nuget inspector
     public static final NullablePathProperty DETECT_DOTNET_PATH =
         NullablePathProperty.newBuilder("detect.dotnet.path")
             .setInfo("dotnet Executable", DetectPropertyFromVersion.VERSION_4_4_0)
@@ -695,6 +716,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.NUGET, DetectGroup.GLOBAL)
             .build();
 
+    // TODO: Excluding ALL detector types doesn't make sense. Exclude the Detector tool instead. Change to NoneEnumListProperty, change default to NONE
     public static final AllNoneEnumListProperty<DetectorType> DETECT_EXCLUDED_DETECTOR_TYPES =
         AllNoneEnumListProperty.newBuilder("detect.excluded.detector.types", emptyList(), DetectorType.class)
             .setInfo("Detector Types Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -715,6 +737,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Change default to false in 8.0.0
     public static final BooleanProperty DETECT_FORCE_SUCCESS_ON_SKIP =
         BooleanProperty.newBuilder("detect.force.success.on.skip", true)
             .setInfo("Force Success On Skip", DetectPropertyFromVersion.VERSION_7_12_1)
@@ -763,6 +786,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.GRADLE, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Inconsistent location of excluded/included within the property names. included/excluded should likely be at the end. Warn support!
     public static final CaseSensitiveStringListProperty DETECT_GRADLE_EXCLUDED_CONFIGURATIONS =
         CaseSensitiveStringListProperty.newBuilder("detect.gradle.excluded.configurations", Collections.emptyList())
             .setInfo("Gradle Exclude Configurations", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -854,6 +878,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.HEX, DetectGroup.GLOBAL)
             .build();
 
+    // TODO: Change to directories.excluded
     public static final StringListProperty DETECT_EXCLUDED_DIRECTORIES =
         StringListProperty.newBuilder("detect.excluded.directories", emptyList())
             .setInfo("Detect Excluded Directories", DetectPropertyFromVersion.VERSION_7_0_0)
@@ -866,6 +891,7 @@ public class DetectProperties {
             .setExample("**/*-test")
             .build();
 
+    // TODO: Horribly named detect.directories.excluded.defaults=false
     public static final BooleanProperty DETECT_EXCLUDED_DIRECTORIES_DEFAULTS_DISABLED =
         BooleanProperty.newBuilder("detect.excluded.directories.defaults.disabled", false)
             .setInfo("Detect Excluded Directories Defaults Disabled", DetectPropertyFromVersion.VERSION_7_0_0)
@@ -877,6 +903,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Rename to included signature scan? @Alex
     public static final IntegerProperty DETECT_EXCLUDED_DIRECTORIES_SEARCH_DEPTH =
         IntegerProperty.newBuilder("detect.excluded.directories.search.depth", 4)
             .setInfo("Detect Excluded Directories Search Depth", DetectPropertyFromVersion.VERSION_7_0_0)
@@ -902,6 +929,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.IMPACT_ANALYSIS, DetectGroup.GLOBAL, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: None doesn't make sense. Change default to ALL
     public static final AllNoneEnumListProperty<DetectorType> DETECT_INCLUDED_DETECTOR_TYPES =
         AllNoneEnumListProperty.newBuilder("detect.included.detector.types", emptyList(), DetectorType.class)
             .setInfo("Detector Types Included", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -921,6 +949,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
+    // TODO: Rename detect.lerna.package.names.excluded
     public static final CaseSensitiveStringListProperty DETECT_LERNA_EXCLUDED_PACKAGES =
         CaseSensitiveStringListProperty.newBuilder("detect.lerna.excluded.packages")
             .setInfo("Lerna Packages Excluded", DetectPropertyFromVersion.VERSION_7_0_0)
@@ -932,6 +961,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Rename detect.lerna.package.names.included
     public static final CaseSensitiveStringListProperty DETECT_LERNA_INCLUDED_PACKAGES =
         CaseSensitiveStringListProperty.newBuilder("detect.lerna.included.packages")
             .setInfo("Lerna Packages Included", DetectPropertyFromVersion.VERSION_7_0_0)
@@ -958,6 +988,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.LERNA, DetectGroup.GLOBAL)
             .build();
 
+    // TODO: Rename to detect.maven.additional.arguments
     public static final NullableStringProperty DETECT_MAVEN_BUILD_COMMAND =
         NullableStringProperty.newBuilder("detect.maven.build.command")
             .setInfo("Maven Build Command", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -968,6 +999,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Rename to detect.maven.modules.excluded
     public static final CaseSensitiveStringListProperty DETECT_MAVEN_EXCLUDED_MODULES =
         CaseSensitiveStringListProperty.newBuilder("detect.maven.excluded.modules")
             .setInfo("Maven Modules Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -979,6 +1011,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Rename to detect.maven.modules.included
     public static final CaseSensitiveStringListProperty DETECT_MAVEN_INCLUDED_MODULES =
         CaseSensitiveStringListProperty.newBuilder("detect.maven.included.modules")
             .setInfo("Maven Modules Included", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -990,6 +1023,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: JP LongShot: rename all Path properties to detect.something.executable.path
     public static final NullablePathProperty DETECT_MAVEN_PATH =
         NullablePathProperty.newBuilder("detect.maven.path")
             .setInfo("Maven Executable", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -997,6 +1031,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.MAVEN, DetectGroup.GLOBAL)
             .build();
 
+    // TODO: Rename detect.maven.scopes.included
     public static final CaseSensitiveStringListProperty DETECT_MAVEN_INCLUDED_SCOPES =
         CaseSensitiveStringListProperty.newBuilder("detect.maven.included.scopes")
             .setInfo("Dependency Scope Included", DetectPropertyFromVersion.VERSION_6_0_0)
@@ -1007,6 +1042,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.MAVEN, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Rename detect.maven.scopes.excluded
     public static final CaseSensitiveStringListProperty DETECT_MAVEN_EXCLUDED_SCOPES =
         CaseSensitiveStringListProperty.newBuilder("detect.maven.excluded.scopes")
             .setInfo("Dependency Scope Excluded", DetectPropertyFromVersion.VERSION_6_0_0)
@@ -1031,6 +1067,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.REPORT, DetectGroup.GLOBAL, DetectGroup.REPORT_SETTING)
             .build();
 
+    // TODO: Rename to detect.npm.additional.arguments
     public static final NullableStringProperty DETECT_NPM_ARGUMENTS =
         NullableStringProperty.newBuilder("detect.npm.arguments")
             .setInfo("Additional NPM Command Arguments", DetectPropertyFromVersion.VERSION_4_3_0)
@@ -1062,6 +1099,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.NUGET, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Rename to detect.nuget.modules.excluded
     public static final CaseSensitiveStringListProperty DETECT_NUGET_EXCLUDED_MODULES =
         CaseSensitiveStringListProperty.newBuilder("detect.nuget.excluded.modules")
             .setInfo("Nuget Projects Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1072,6 +1110,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Deprecate
     public static final BooleanProperty DETECT_NUGET_IGNORE_FAILURE =
         BooleanProperty.newBuilder("detect.nuget.ignore.failure", false)
             .setInfo("Ignore Nuget Failures", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1080,6 +1119,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Rename to detect.nuget.modules.included
     public static final CaseSensitiveStringListProperty DETECT_NUGET_INCLUDED_MODULES =
         CaseSensitiveStringListProperty.newBuilder("detect.nuget.included.modules")
             .setInfo("Nuget Modules Included", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1090,6 +1130,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Deprecate
     public static final NullableStringProperty DETECT_NUGET_INSPECTOR_VERSION =
         NullableStringProperty.newBuilder("detect.nuget.inspector.version")
             .setInfo("Nuget Inspector Version", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1098,6 +1139,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Deprecate
     public static final StringListProperty DETECT_NUGET_PACKAGES_REPO_URL =
         StringListProperty.newBuilder("detect.nuget.packages.repo.url", singletonList("https://api.nuget.org/v3/index.json"))
             .setInfo("Nuget Packages Repository URL", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1175,6 +1217,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PIP, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Why is this even an option? I want to NUKE this, but in case we can't please replace it: detect.pipenv.dependency.types.included=ALL/DIRECT
     public static final BooleanProperty DETECT_PIP_ONLY_PROJECT_TREE =
         BooleanProperty.newBuilder("detect.pip.only.project.tree", false)
             .setInfo("PIP Include Only Project Tree", DetectPropertyFromVersion.VERSION_6_1_0)
@@ -1304,6 +1347,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Should mention downstream affects. Could be made smarter with ticket IDETECT-3121
     public static final BooleanProperty DETECT_PROJECT_CODELOCATION_UNMAP =
         BooleanProperty.newBuilder("detect.project.codelocation.unmap", false)
             .setInfo("Unmap All Other Scans for Project", DetectPropertyFromVersion.VERSION_4_0_0)
@@ -1337,6 +1381,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Make an enum DetectorType
     public static final NullableStringProperty DETECT_PROJECT_DETECTOR =
         NullableStringProperty.newBuilder("detect.project.detector")
             .setInfo("Project Name and Version Detector", DetectPropertyFromVersion.VERSION_4_0_0)
@@ -1466,6 +1511,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PYTHON, DetectGroup.GLOBAL)
             .build();
 
+    // TODO: Rename to detect.detector.types.required
     public static final EnumListProperty<DetectorType> DETECT_REQUIRED_DETECTOR_TYPES =
         EnumListProperty.newBuilder("detect.required.detector.types", emptyList(), DetectorType.class)
             .setInfo("Required Detect Types", DetectPropertyFromVersion.VERSION_4_3_0)
@@ -1507,6 +1553,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.SBT, DetectGroup.GLOBAL)
             .build();
 
+    // TODO: Rename to detect.sbt.additional.arguments
     public static final NullableStringProperty DETECT_SBT_ARGUMENTS =
         NullableStringProperty.newBuilder("detect.sbt.arguments")
             .setInfo("Additional sbt command Arguments", DetectPropertyFromVersion.VERSION_7_0_0)
@@ -1516,6 +1563,7 @@ public class DetectProperties {
             .setExample("\"-Djline.terminal=jline.UnsupportedTerminal\"")
             .build();
 
+    // TODO: Rename to detect.sbt.configurations.excluded
     public static final CaseSensitiveStringListProperty DETECT_SBT_EXCLUDED_CONFIGURATIONS =
         CaseSensitiveStringListProperty.newBuilder("detect.sbt.excluded.configurations")
             .setInfo("SBT Configurations Excluded", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1528,6 +1576,7 @@ public class DetectProperties {
             .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
             .build();
 
+    // TODO: Rename to detect.sbt.configurations.included
     public static final CaseSensitiveStringListProperty DETECT_SBT_INCLUDED_CONFIGURATIONS =
         CaseSensitiveStringListProperty.newBuilder("detect.sbt.included.configurations")
             .setInfo("SBT Configurations Included", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1548,6 +1597,7 @@ public class DetectProperties {
             .setDeprecated(SBT_REPORT_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
             .build();
 
+    // TODO: Rename to detect.signature.scan.output.path
     public static final NullablePathProperty DETECT_SCAN_OUTPUT_PATH =
         NullablePathProperty.newBuilder("detect.scan.output.path")
             .setInfo("Scan Output Path", DetectPropertyFromVersion.VERSION_3_0_0)
@@ -1596,6 +1646,7 @@ public class DetectProperties {
             .setCategory(DetectCategory.Advanced)
             .build();
 
+    // TODO: Change to AllEnumListProperty, NONE doesn't make sense
     public static final AllNoneEnumListProperty<DetectTool> DETECT_TOOLS_EXCLUDED =
         AllNoneEnumListProperty.newBuilder("detect.tools.excluded", emptyList(), DetectTool.class)
             .setInfo("Detect Tools Excluded", DetectPropertyFromVersion.VERSION_5_0_0)
@@ -1607,6 +1658,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.PATHS, DetectGroup.GLOBAL)
             .build();
 
+    // TODO: Change to NoneEnumListProperty, ALL doesn't make sense
     public static final AllNoneEnumListProperty<DetectTool> DETECT_TOOLS =
         AllNoneEnumListProperty.newBuilder("detect.tools", emptyList(), DetectTool.class)
             .setInfo("Detect Tools Included", DetectPropertyFromVersion.VERSION_5_0_0)
@@ -1627,6 +1679,7 @@ public class DetectProperties {
             .setGroups(DetectGroup.YARN, DetectGroup.SOURCE_SCAN)
             .build();
 
+    // TODO: Rename to detect.yarn.workspaces.excluded
     public static final CaseSensitiveStringListProperty DETECT_YARN_EXCLUDED_WORKSPACES =
         CaseSensitiveStringListProperty.newBuilder("detect.yarn.excluded.workspaces")
             .setInfo("Yarn Exclude Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)
@@ -1639,6 +1692,7 @@ public class DetectProperties {
             .setExample("workspaces/workspace-a,workspaces/*-test")
             .build();
 
+    // TODO: Rename to detect.yarn.workspaces.included
     public static final CaseSensitiveStringListProperty DETECT_YARN_INCLUDED_WORKSPACES =
         CaseSensitiveStringListProperty.newBuilder("detect.yarn.included.workspaces")
             .setInfo("Yarn Include Workspaces", DetectPropertyFromVersion.VERSION_7_0_0)
@@ -1651,6 +1705,7 @@ public class DetectProperties {
             .setExample("workspaces/workspace-a,workspaces/workspace-b")
             .build();
 
+    // TODO: Drop. Move help to the other logging property. Better logging doc would help instead of keeping this.
     public static final EnumProperty<LogLevel> LOGGING_LEVEL_COM_SYNOPSYS_INTEGRATION =
         EnumProperty.newBuilder("logging.level.com.synopsys.integration", LogLevel.INFO, LogLevel.class)
             .setInfo("Logging Level", DetectPropertyFromVersion.VERSION_5_3_0)
@@ -1769,6 +1824,7 @@ public class DetectProperties {
             .setDeprecated(AGGREGATION_MODE_DEPRECATION_MESSAGE, DetectMajorVersion.EIGHT)
             .build();
 
+    // TODO: Let's make sure this deprecation message gets out. Currently only when set. If unset or 'true', warn users the endpoint is going away.
     @Deprecated
     public static final BooleanProperty BLACKDUCK_LEGACY_UPLOAD_ENABLED =
         BooleanProperty.newBuilder("blackduck.legacy.upload.enabled", true)
@@ -1968,6 +2024,7 @@ public class DetectProperties {
     }
 
     // TODO: Remove in 8.0.0
+    // TODO: Rename to createReplacedByPropertyMessage. Add a method to PropertyBuilder if you're feeling lucky punk - TP APPROVED
     private static String createDetectorPropertyDeprecationMessage(@NotNull Property replacementProperty) {
         return String.format(
             "This property is being removed in favor of %s. If the replacement property is set, this property is ignored. The default value of this property is used if both properties are not set.",
