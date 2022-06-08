@@ -30,11 +30,14 @@ public class FullAggregateGraphCreator {
         ExternalId projectExternalId = ExternalId.FACTORY.createNameVersionExternalId(DETECT_FORGE, projectNameVersion.getName(), projectNameVersion.getVersion());
         ProjectDependency projectDependency = new ProjectDependency(projectExternalId);
         ProjectDependencyGraph aggregateDependencyGraph = new ProjectDependencyGraph(projectDependency);
-
-        for (DetectCodeLocation detectCodeLocation : codeLocations) {
-            Dependency codeLocationDependency = createAggregateNode(sourcePath, detectCodeLocation);
-            aggregateDependencyGraph.addDirectDependency(codeLocationDependency);
-            DependencyGraphUtil.copyDirectDependenciesToParent(aggregateDependencyGraph, codeLocationDependency, detectCodeLocation.getDependencyGraph());
+        if (codeLocations.size() == 1) {
+            DependencyGraphUtil.copyDirectDependenciesToParent(aggregateDependencyGraph, projectDependency, codeLocations.get(0).getDependencyGraph());
+        } else {
+            for (DetectCodeLocation detectCodeLocation : codeLocations) {
+                Dependency codeLocationDependency = createAggregateNode(sourcePath, detectCodeLocation);
+                aggregateDependencyGraph.addDirectDependency(codeLocationDependency);
+                DependencyGraphUtil.copyDirectDependenciesToParent(aggregateDependencyGraph, codeLocationDependency, detectCodeLocation.getDependencyGraph());
+            }
         }
 
         return aggregateDependencyGraph;
