@@ -2,6 +2,7 @@ package com.synopsys.integration.detect.lifecycle.run.operation;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -15,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.blackduck.api.generated.discovery.ApiDiscovery;
 import com.synopsys.integration.blackduck.api.generated.enumeration.PolicyRuleSeverityType;
@@ -98,6 +100,8 @@ import com.synopsys.integration.detect.workflow.bdio.BdioResult;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateBdio2FileOperation;
 import com.synopsys.integration.detect.workflow.bdio.CreateAggregateCodeLocationOperation;
 import com.synopsys.integration.detect.workflow.bdio.aggregation.FullAggregateGraphCreator;
+import com.synopsys.integration.detect.workflow.bdio.post.process.DependencyGraphPostProcessor;
+import com.synopsys.integration.detect.workflow.bdio.post.process.ProjectPathPostProcessor;
 import com.synopsys.integration.detect.workflow.blackduck.BlackDuckPostOptions;
 import com.synopsys.integration.detect.workflow.blackduck.DetectFontLoader;
 import com.synopsys.integration.detect.workflow.blackduck.bdio.IntelligentPersistentUploadOperation;
@@ -684,12 +688,23 @@ public class OperationFactory { //TODO: OperationRunner
     }
 
     public ProjectDependencyGraph aggregateSubProject(NameVersion projectNameVersion, List<DetectCodeLocation> detectCodeLocations) throws OperationException {
-        return auditLog.namedPublic("SubProject Aggregate", "SubProjectAggregate",
-            () -> (new FullAggregateGraphCreator()).aggregateCodeLocations(
+        return auditLog.namedPublic(
+            "SubProject Aggregate",
+            () -> new FullAggregateGraphCreator().aggregateCodeLocations(
                 directoryManager.getSourceDirectory(),
                 projectNameVersion,
                 detectCodeLocations
             )
+        );
+    }
+
+    public void postProcessGraph(DependencyGraph graph) throws OperationException {
+        List<DependencyGraphPostProcessor> postProcessors = Arrays.asList(
+            new ProjectPathPostProcessor(directoryManager.getSourceDirectory())
+        );
+        auditLog.namedInternal(
+            "Post-Process Graph",
+            () -> postProcessors.forEach(processor -> processor.applyPostProcessing(graph))
         );
     }
 
