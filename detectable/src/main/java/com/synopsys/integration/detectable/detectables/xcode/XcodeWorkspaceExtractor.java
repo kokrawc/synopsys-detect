@@ -14,8 +14,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
+import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
+import com.synopsys.integration.bdio.model.BdioIdEscaper;
 import com.synopsys.integration.common.util.finder.FileFinder;
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
 import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 import com.synopsys.integration.detectable.detectables.swift.lock.PackageResolvedExtractor;
 import com.synopsys.integration.detectable.detectables.swift.lock.SwiftPackageResolvedDetectable;
@@ -25,6 +28,7 @@ import com.synopsys.integration.detectable.detectables.xcode.model.XcodeWorkspac
 import com.synopsys.integration.detectable.detectables.xcode.model.XcodeWorkspaceResult;
 import com.synopsys.integration.detectable.detectables.xcode.parse.XcodeWorkspaceFormatChecker;
 import com.synopsys.integration.detectable.detectables.xcode.parse.XcodeWorkspaceParser;
+import com.synopsys.integration.detectable.util.ExternalIdCreator;
 
 public class XcodeWorkspaceExtractor {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -50,7 +54,7 @@ public class XcodeWorkspaceExtractor {
         XcodeWorkspace xcodeWorkspace = xcodeWorkspaceParser.parse(workspaceFileContents);
         xcodeWorkspaceFormatChecker.checkForVersionCompatibility(xcodeWorkspace);
 
-        List<CodeLocation> codeLocations = new LinkedList<>();
+        List<DependencyGraph> dependencyGraphs = new LinkedList<>();
         List<FailedDetectableResult> failedDetectableResults = new LinkedList<>();
         for (XcodeFileReference fileReference : xcodeWorkspace.getFileReferences()) {
             File workspaceReferencedDirectory = workspaceDirectory.getParentFile().toPath().resolve(fileReference.getRelativeLocation()).toFile();
@@ -68,13 +72,15 @@ public class XcodeWorkspaceExtractor {
                     PackageResolvedResult swiftProjectResult = extractStandalonePackageResolved(workspaceReferencedDirectory);
                     swiftProjectResult.getFailedDetectableResult()
                         .ifPresent(failedDetectableResults::add);
-                    codeLocations.add(new CodeLocation(swiftProjectResult.getDependencyGraph(), workspaceReferencedDirectory));
+                    DependencyGraph directoryGraph = createGraphFromReference(fileReference, swiftProjectResult.getDependencyGraph());
+                    dependencyGraphs.add(directoryGraph);
                     break;
                 case XCODE_PROJECT:
                     PackageResolvedResult xcodeProjectResult = extractFromXcodeProject(workspaceReferencedDirectory);
                     xcodeProjectResult.getFailedDetectableResult()
                         .ifPresent(failedDetectableResults::add);
-                    codeLocations.add(new CodeLocation(xcodeProjectResult.getDependencyGraph(), workspaceReferencedDirectory));
+                    DependencyGraph projectGraph = createGraphFromReference(fileReference, xcodeProjectResult.getDependencyGraph());
+                    dependencyGraphs.add(projectGraph);
                     break;
                 default:
                     throw new UnsupportedOperationException(String.format("Unrecognized FileReferenceType: %s", fileReference.getFileReferenceType()));
@@ -84,7 +90,18 @@ public class XcodeWorkspaceExtractor {
         if (CollectionUtils.isNotEmpty(failedDetectableResults)) {
             return XcodeWorkspaceResult.failure(failedDetectableResults);
         }
-        return XcodeWorkspaceResult.success(codeLocations);
+
+        // TODO: Probably a ProjectDependencyGraph when properly rendered. Hard to test right now - JM 06/2022
+        DependencyGraph dependencyGraph = new BasicDependencyGraph();
+        dependencyGraphs.forEach(dependencyGraph::copyGraphToRoot);
+        return XcodeWorkspaceResult.success(dependencyGraph);
+    }
+
+    private DependencyGraph createGraphFromReference(XcodeFileReference fileReference, DependencyGraph extracted) {
+        String cleanPath = new BdioIdEscaper().escapeForUri(fileReference.getRelativeLocation().toString());
+        DependencyGraph projectDependencyGraph = new ProjectDependencyGraph(ExternalIdCreator.DETECT_FORGE, cleanPath);
+        projectDependencyGraph.copyGraphToRoot(extracted);
+        return projectDependencyGraph;
     }
 
     private PackageResolvedResult extractStandalonePackageResolved(File projectDirectory) throws IOException {

@@ -4,29 +4,31 @@ import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.jetbrains.annotations.Nullable;
 
-import com.synopsys.integration.detectable.detectable.codelocation.CodeLocation;
+import com.synopsys.integration.bdio.graph.BasicDependencyGraph;
+import com.synopsys.integration.bdio.graph.DependencyGraph;
 import com.synopsys.integration.detectable.detectable.result.FailedDetectableResult;
 
 public class XcodeWorkspaceResult {
-    private final List<CodeLocation> codeLocations;
+    private final DependencyGraph dependencyGraph;
     private final List<FailedDetectableResult> failedDetectableResults;
 
     public static XcodeWorkspaceResult failure(List<FailedDetectableResult> failedDetectableResults) {
-        return new XcodeWorkspaceResult(Collections.emptyList(), failedDetectableResults);
+        return new XcodeWorkspaceResult(new BasicDependencyGraph(), failedDetectableResults);
     }
 
-    public static XcodeWorkspaceResult success(List<CodeLocation> codeLocations) {
+    public static XcodeWorkspaceResult success(DependencyGraph codeLocations) {
         return new XcodeWorkspaceResult(codeLocations, Collections.emptyList());
     }
 
-    private XcodeWorkspaceResult(List<CodeLocation> codeLocations, List<FailedDetectableResult> failedDetectableResults) {
-        this.codeLocations = codeLocations;
+    private XcodeWorkspaceResult(@Nullable DependencyGraph dependencyGraph, List<FailedDetectableResult> failedDetectableResults) {
+        this.dependencyGraph = dependencyGraph;
         this.failedDetectableResults = failedDetectableResults;
     }
 
-    public List<CodeLocation> getCodeLocations() {
-        return codeLocations;
+    public DependencyGraph getDependencyGraph() {
+        return dependencyGraph;
     }
 
     public List<FailedDetectableResult> getFailedDetectableResults() {

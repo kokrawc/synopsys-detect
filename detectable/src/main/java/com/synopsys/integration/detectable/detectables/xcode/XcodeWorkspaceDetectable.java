@@ -2,8 +2,6 @@ package com.synopsys.integration.detectable.detectables.xcode;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -11,6 +9,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.SAXException;
 
+import com.synopsys.integration.bdio.graph.ProjectDependencyGraph;
 import com.synopsys.integration.common.util.finder.FileFinder;
 import com.synopsys.integration.detectable.Detectable;
 import com.synopsys.integration.detectable.DetectableEnvironment;
@@ -25,6 +24,7 @@ import com.synopsys.integration.detectable.detectables.swift.lock.model.PackageR
 import com.synopsys.integration.detectable.detectables.xcode.model.XcodeWorkspaceResult;
 import com.synopsys.integration.detectable.extraction.Extraction;
 import com.synopsys.integration.detectable.extraction.ExtractionEnvironment;
+import com.synopsys.integration.detectable.util.ExternalIdCreator;
 
 @DetectableInfo(language = "Swift", forge = "GITHUB", requirementsMarkdown = "Directory: *.xcworkspace")
 public class XcodeWorkspaceDetectable extends Detectable {
@@ -71,7 +71,7 @@ public class XcodeWorkspaceDetectable extends Detectable {
 
     @Override
     public Extraction extract(ExtractionEnvironment extractionEnvironment) throws IOException, ParserConfigurationException, SAXException {
-        List<CodeLocation> codeLocations = new LinkedList<>();
+        ProjectDependencyGraph dependencyGraph = new ProjectDependencyGraph(ExternalIdCreator.DETECT_FORGE, environment.getDirectory().getPath());
 
         if (foundPackageResolvedFile != null) {
             PackageResolvedResult localResult = packageResolvedExtractor.extract(foundPackageResolvedFile);
@@ -79,8 +79,7 @@ public class XcodeWorkspaceDetectable extends Detectable {
             if (failedDetectableResult.isPresent()) {
                 return Extraction.failure(failedDetectableResult.get());
             }
-
-            codeLocations.add(new CodeLocation(localResult.getDependencyGraph(), environment.getDirectory()));
+            dependencyGraph.copyGraphToRoot(localResult.getDependencyGraph());
         }
 
         if (foundWorkspaceDataFile != null) {
@@ -88,10 +87,10 @@ public class XcodeWorkspaceDetectable extends Detectable {
             if (xcodeWorkspaceResult.isFailure()) {
                 return Extraction.failure(xcodeWorkspaceResult.getFailedDetectableResults());
             }
-            codeLocations.addAll(xcodeWorkspaceResult.getCodeLocations());
+            dependencyGraph.copyGraphToRoot(xcodeWorkspaceResult.getDependencyGraph());
         }
 
-        return Extraction.success(codeLocations);
+        return Extraction.success(new CodeLocation(dependencyGraph));
     }
 
 }

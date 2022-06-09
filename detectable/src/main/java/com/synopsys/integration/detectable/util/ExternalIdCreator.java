@@ -5,6 +5,8 @@ import com.synopsys.integration.bdio.model.externalid.ExternalId;
 import com.synopsys.integration.bdio.model.externalid.ExternalIdFactory;
 
 public class ExternalIdCreator {
+    public static final Forge DETECT_FORGE = new Forge("/", "Detect"); // Forge for root project and directory based subprojects
+    
     public static ExternalIdFactory sharedFactory = new ExternalIdFactory();
 
     public static ExternalId path(final Forge forge, final String path) {
