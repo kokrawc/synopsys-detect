@@ -26,20 +26,23 @@ public class AirGapInspectorPaths {
 
     public AirGapInspectorPaths(AirGapPathFinder pathFinder) {
         File detectJar = pathFinder.findDetectJar();
-        dockerInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.DOCKER);
-        gradleInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.GRADLE);
-        nugetInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.NUGET);
-        projectInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.PROJECT_INSPECTOR);
+        dockerInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.DOCKER).orElse(null);
+        gradleInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.GRADLE).orElse(null);
+        nugetInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.NUGET).orElse(null);
+        projectInspectorAirGapPath = determineInspectorAirGapPath(detectJar, pathFinder, AirGapPathFinder.PROJECT_INSPECTOR).orElse(null);
         fontsAirGapPath = determineFontsAirGapPath(detectJar, pathFinder);
     }
 
-    private Path determineInspectorAirGapPath(File detectJar, AirGapPathFinder airGapPathFinder, String inspectorName) {
+    private Optional<Path> determineInspectorAirGapPath(File detectJar, AirGapPathFinder airGapPathFinder, String inspectorName) {
+        if (detectJar == null) {
+            return Optional.empty();
+        }
         try {
-            return airGapPathFinder.createRelativePackagedInspectorsFile(detectJar.getParentFile(), inspectorName).toPath();
+            return Optional.of(airGapPathFinder.createRelativePackagedInspectorsFile(detectJar.getParentFile(), inspectorName).toPath());
         } catch (Exception e) {
             logger.debug(String.format("Exception encountered when guessing air gap path for %s", inspectorName));
             logger.debug(e.getMessage());
-            return null;
+            return Optional.empty();
         }
     }
 
