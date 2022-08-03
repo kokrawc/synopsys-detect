@@ -885,11 +885,11 @@ public class OperationRunner {
         return detectConfigurationFactory.createShouldUnmapCodeLocations();
     }
 
-    public void unmapCodeLocations(ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData) throws OperationException {
+    public void unmapCodeLocations(ProjectVersionWrapper projectVersion, BlackDuckRunData blackDuckRunData, List<String> codeLocationNamesToPreserve) throws OperationException {
         auditLog.namedInternal("Unmap Code Locations", () -> new UnmapCodeLocationsOperation(
             blackDuckRunData.getBlackDuckServicesFactory().getBlackDuckApiClient(),
             blackDuckRunData.getBlackDuckServicesFactory().createCodeLocationService()
-        ).unmapCodeLocations(projectVersion.getProjectVersionView()));
+        ).unmapCodeLocations(projectVersion.getProjectVersionView(), codeLocationNamesToPreserve));
     }
 
     public FindCloneOptions calculateCloneOptions() {

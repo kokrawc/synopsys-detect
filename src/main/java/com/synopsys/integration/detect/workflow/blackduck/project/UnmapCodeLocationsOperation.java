@@ -1,6 +1,7 @@
 package com.synopsys.integration.detect.workflow.blackduck.project;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,12 +25,17 @@ public class UnmapCodeLocationsOperation {
         this.codeLocationService = codeLocationService;
     }
 
-    public void unmapCodeLocations(ProjectVersionView projectVersionView) throws DetectUserFriendlyException {
+    public void unmapCodeLocations(ProjectVersionView projectVersionView, List<String> codeLocationNamesToPreserve) throws DetectUserFriendlyException {
+        List<String> namesToPreserveLowercase = codeLocationNamesToPreserve.stream().map(String::toLowerCase).collect(Collectors.toList());
         try {
             List<CodeLocationView> codeLocationViews = blackDuckService.getAllResponses(projectVersionView.metaCodelocationsLink());
-
             for (CodeLocationView codeLocationView : codeLocationViews) {
-                codeLocationService.unmapCodeLocation(codeLocationView);
+                if (!namesToPreserveLowercase.contains(codeLocationView.getName().toLowerCase())) {
+                    logger.debug("Unmapping codelocation: {}", codeLocationView.getName());
+                    codeLocationService.unmapCodeLocation(codeLocationView);
+                } else {
+                    logger.debug("Preserving codelocation: {} (it is in the \"names to preserve\" list)", codeLocationView.getName());
+                }
             }
             logger.info("Successfully unmapped (" + codeLocationViews.size() + ") code locations.");
         } catch (IntegrationException e) {

@@ -1,5 +1,6 @@
 package com.synopsys.integration.detect.lifecycle.run.step;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -76,7 +77,7 @@ public class BlackDuckProjectVersionStepRunner {
 
         if (operationRunner.calculateShouldUnmap()) {
             logger.debug("Unmapping code locations.");
-            operationRunner.unmapCodeLocations(projectVersion, blackDuckRunData);
+            operationRunner.unmapCodeLocations(projectVersion, blackDuckRunData, new ArrayList<>() /* TODO pass preserve list */);
         } else {
             logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
         }
