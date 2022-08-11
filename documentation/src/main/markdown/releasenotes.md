@@ -11,6 +11,9 @@
 ### Resolved issues
 
 * (IDETECT-3419) Resolved an issue where the NuGet inspector cannot be found when a solution file cannot be found but multiple C# projects are found by Detect.
+* (IDETECT-3306) Resolved an issue where a NullPointerException would occur when project inspector discovered no modules for a project.
+* (IDETECT-3308) The __MACOSX directory will now be ignored by default when determining which detectors are applicable for a project.
+* (IDETECT-3307) Warn when project inspector cannot be downloaded, installed, or found.
 
 ## Version 8.0.0
 
@@ -22,7 +25,7 @@
 ### Changed features
 
 * The default value of `detect.project.clone.categories` now includes DEEP_LICENSE (added to Black Duck in 2022.2.0), raising the minimum version of Black Duck for [solution_name] 8.0.0 to 2022.2.0.
-* The codelocation naming scheme has changed. You can use property `detect.project.codelocation.unmap` to unmap old codelocations from existing projects.
+* The [codelocation naming scheme](naming/projectversionscannaming.md#code-location-scan-naming) has changed. To prevent old codelocations from contributing stale results to re-scanned projects, set property `detect.project.codelocation.unmap` to true for the first run of [solution_name] 8. This will unmap the old codelocations.
 * The default value of `detect.force.success.on.skip` has changed to false, so by default [solution_name] will exit with return code FAILURE_MINIMUM_INTERVAL_NOT_MET (13) when a scan is skipped because the Black Duck minimum scan interval has not been met.
 * By default, all detectors now include in their dependency graph all discovered
 dependencies, packages, and configurations, because the default for
