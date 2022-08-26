@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import com.synopsys.integration.blackduck.api.generated.view.ProjectVersionView;
 import com.synopsys.integration.blackduck.codelocation.CodeLocationCreationData;
+import com.synopsys.integration.blackduck.codelocation.upload.UploadTarget;
 import com.synopsys.integration.blackduck.service.BlackDuckServicesFactory;
 import com.synopsys.integration.blackduck.service.model.ProjectVersionWrapper;
 import com.synopsys.integration.detect.configuration.enumeration.DetectTool;
@@ -74,11 +77,11 @@ public class IntelligentModeStepRunner {
         DetectToolFilter detectToolFilter,
         DockerTargetData dockerTargetData
     ) throws OperationException {
-
+        List<String> codeLocationNamesToPreserve = extractCodelocationNames(bdioResult);
         ProjectVersionWrapper projectVersion = stepHelper.runAsGroup(
             "Create or Locate Project",
             OperationType.INTERNAL,
-            () -> new BlackDuckProjectVersionStepRunner(operationRunner).runAll(projectNameVersion, blackDuckRunData)
+            () -> new BlackDuckProjectVersionStepRunner(operationRunner).runAll(projectNameVersion, blackDuckRunData, codeLocationNamesToPreserve)
         );
 
         logger.debug("Completed project and version actions.");
@@ -154,6 +157,18 @@ public class IntelligentModeStepRunner {
         allCodeLocationNames.addAll(waitData.getCodeLocationNames());
         operationRunner.publishCodeLocationNames(allCodeLocationNames);
         return new CodeLocationResults(allCodeLocationNames, waitData);
+    }
+
+    private List<String> extractCodelocationNames(BdioResult bdioResult) {
+        List<String> codeLocationNamesToPreserve = new LinkedList<>();
+        for (UploadTarget uploadTarget : bdioResult.getUploadTargets()) {
+            System.out.println("UploadTarget codelocationName: " + uploadTarget.getCodeLocationName());
+            codeLocationNamesToPreserve.add(uploadTarget.getCodeLocationName());
+        }
+        for (String codelocationName : bdioResult.getCodeLocationNamesResult().getCodeLocationNames().values()) {
+            System.out.println("CodeLocationNameResult codelocationName: " + codelocationName);
+        }
+        return codeLocationNamesToPreserve;
     }
 
     private void publishPostResults(BdioResult bdioResult, ProjectVersionWrapper projectVersionWrapper, DetectToolFilter detectToolFilter) {

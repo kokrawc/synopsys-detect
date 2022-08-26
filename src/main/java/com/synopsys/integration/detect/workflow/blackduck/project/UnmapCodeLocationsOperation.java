@@ -29,15 +29,17 @@ public class UnmapCodeLocationsOperation {
         List<String> namesToPreserveLowercase = codeLocationNamesToPreserve.stream().map(String::toLowerCase).collect(Collectors.toList());
         try {
             List<CodeLocationView> codeLocationViews = blackDuckService.getAllResponses(projectVersionView.metaCodelocationsLink());
+            int unmappedCount = 0;
             for (CodeLocationView codeLocationView : codeLocationViews) {
                 if (!namesToPreserveLowercase.contains(codeLocationView.getName().toLowerCase())) {
                     logger.debug("Unmapping codelocation: {}", codeLocationView.getName());
                     codeLocationService.unmapCodeLocation(codeLocationView);
+                    unmappedCount++;
                 } else {
                     logger.debug("Preserving codelocation: {} (it is in the \"names to preserve\" list)", codeLocationView.getName());
                 }
             }
-            logger.info("Successfully unmapped (" + codeLocationViews.size() + ") code locations.");
+            logger.info("Successfully unmapped (" + unmappedCount + ") code locations.");
         } catch (IntegrationException e) {
             String errorMessage = String.format("There was a problem unmapping Code Locations: %s", e.getMessage());
             throw new DetectUserFriendlyException(errorMessage, e, ExitCodeType.FAILURE_GENERAL_ERROR);

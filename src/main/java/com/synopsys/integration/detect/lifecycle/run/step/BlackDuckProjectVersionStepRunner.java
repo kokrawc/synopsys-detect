@@ -1,6 +1,5 @@
 package com.synopsys.integration.detect.lifecycle.run.step;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +29,10 @@ public class BlackDuckProjectVersionStepRunner {
         this.operationRunner = operationRunner;
     }
 
-    ProjectVersionWrapper runAll(NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData) throws DetectUserFriendlyException, OperationException {
+    ProjectVersionWrapper runAll(
+        NameVersion projectNameVersion, BlackDuckRunData blackDuckRunData,
+        List<String> codeLocationNamesToPreserve
+    ) throws DetectUserFriendlyException, OperationException {
         CloneFindResult cloneFindResult = findClone(projectNameVersion.getName(), blackDuckRunData);
         ProjectGroupFindResult projectGroupFindResult = findProjectGroup(blackDuckRunData);
         ProjectVersionLicenseFindResult projectVersionLicensesFindResult = findLicense(blackDuckRunData);
@@ -77,7 +79,7 @@ public class BlackDuckProjectVersionStepRunner {
 
         if (operationRunner.calculateShouldUnmap()) {
             logger.debug("Unmapping code locations.");
-            operationRunner.unmapCodeLocations(projectVersion, blackDuckRunData, new ArrayList<>() /* TODO pass preserve list */);
+            operationRunner.unmapCodeLocations(projectVersion, blackDuckRunData, codeLocationNamesToPreserve);
         } else {
             logger.debug("Will not unmap code locations: Project view was not present, or should not unmap code locations.");
         }
