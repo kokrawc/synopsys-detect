@@ -36,7 +36,7 @@ public class UnmapCodeLocationsOperation {
                     codeLocationService.unmapCodeLocation(codeLocationView);
                     unmappedCount++;
                 } else {
-                    logger.debug("Preserving codelocation: {} (it is in the \"names to preserve\" list)", codeLocationView.getName());
+                    logger.debug("Preserving codelocation: {} (which Detect intends to overwrite)", codeLocationView.getName());
                 }
             }
             logger.info("Successfully unmapped (" + unmappedCount + ") code locations.");

@@ -4,10 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +77,11 @@ public class IntelligentModeStepRunner {
         DetectToolFilter detectToolFilter,
         DockerTargetData dockerTargetData
     ) throws OperationException {
-        List<String> codeLocationNamesToPreserve = extractCodelocationNames(bdioResult);
+        // TODO incomplete: This only has bdio upload CL names
+        List<String> codeLocationNamesToPreserve = bdioResult.getUploadTargets().stream()
+            .map(UploadTarget::getCodeLocationName)
+            .collect(Collectors.toList());
+        // TODO this is where unmapping happens now; but we need to determine ALL CL names before unmapping and uploading
         ProjectVersionWrapper projectVersion = stepHelper.runAsGroup(
             "Create or Locate Project",
             OperationType.INTERNAL,
@@ -101,6 +105,8 @@ public class IntelligentModeStepRunner {
 
         logger.debug("Completed Detect Code Location processing.");
 
+        // TODO need more Codelocation names from these
+        // TODO will have to create ALL scan batches first, then unmap, then upload BDIO and run these
         stepHelper.runToolIfIncluded(DetectTool.SIGNATURE_SCAN, "Signature Scanner", () -> {
             SignatureScanStepRunner signatureScanStepRunner = new SignatureScanStepRunner(operationRunner);
             SignatureScannerCodeLocationResult signatureScannerCodeLocationResult = signatureScanStepRunner.runSignatureScannerOnline(
@@ -157,18 +163,6 @@ public class IntelligentModeStepRunner {
         allCodeLocationNames.addAll(waitData.getCodeLocationNames());
         operationRunner.publishCodeLocationNames(allCodeLocationNames);
         return new CodeLocationResults(allCodeLocationNames, waitData);
-    }
-
-    private List<String> extractCodelocationNames(BdioResult bdioResult) {
-        List<String> codeLocationNamesToPreserve = new LinkedList<>();
-        for (UploadTarget uploadTarget : bdioResult.getUploadTargets()) {
-            System.out.println("UploadTarget codelocationName: " + uploadTarget.getCodeLocationName());
-            codeLocationNamesToPreserve.add(uploadTarget.getCodeLocationName());
-        }
-        for (String codelocationName : bdioResult.getCodeLocationNamesResult().getCodeLocationNames().values()) {
-            System.out.println("CodeLocationNameResult codelocationName: " + codelocationName);
-        }
-        return codeLocationNamesToPreserve;
     }
 
     private void publishPostResults(BdioResult bdioResult, ProjectVersionWrapper projectVersionWrapper, DetectToolFilter detectToolFilter) {

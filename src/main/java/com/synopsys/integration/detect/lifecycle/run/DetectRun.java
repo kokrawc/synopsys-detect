@@ -57,6 +57,7 @@ public class DetectRun {
 
             UniversalStepRunner stepRunner = new UniversalStepRunner(operationRunner, stepHelper); //Product independent tools
             UniversalToolsResult universalToolsResult = stepRunner.runUniversalTools();
+            // TODO UniversalToolsResult has all CL names?? NOPE!
 
             // combine: processProjectInformation() -> ProjectResult (nameversion, bdio)
             NameVersion nameVersion = stepRunner.determineProjectInformation(universalToolsResult);

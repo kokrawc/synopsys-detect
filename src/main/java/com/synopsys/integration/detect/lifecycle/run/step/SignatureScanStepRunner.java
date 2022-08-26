@@ -37,6 +37,7 @@ public class SignatureScanStepRunner {
         ScanBatchRunner scanBatchRunner = resolveOnlineScanBatchRunner(blackDuckRunData);
 
         List<SignatureScanPath> scanPaths = operationRunner.createScanPaths(projectNameVersion, dockerTargetData);
+        // TODO figures out CL names here and puts them in scanBatch.scanTargets; could I do this earlier??
         ScanBatch scanBatch = operationRunner.createScanBatchOnline(scanPaths, projectNameVersion, dockerTargetData, blackDuckRunData);
 
         NotificationTaskRange notificationTaskRange = operationRunner.createCodeLocationRange(blackDuckRunData);
