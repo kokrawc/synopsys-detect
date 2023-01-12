@@ -127,6 +127,7 @@ public class GenerateDocsTask extends DefaultTask {
             });
 
         createMarkdownFromFreemarker(templateProvider, outputDir, "detectors", new DetectorCascadePage(detectorTypes));
+        createMarkdownFromFreemarker(templateProvider, outputDir, "detectors-detailed", new DetectorCascadePage(detectorTypes));
     }
 
     private String encodePropertyLocation(String propertyName) {
