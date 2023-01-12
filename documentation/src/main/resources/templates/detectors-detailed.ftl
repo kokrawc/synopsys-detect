@@ -12,6 +12,9 @@ Details on detector search is available on the [detector search](../downloadinga
 |**${detectorType.name}**|||||||
 <#list detectorType.entryPoints as entryPoint>
 ||${entryPoint.name}||||||
+|||||| Yields to: <#list entryPoint.searchRule.yieldsTo as yieldsTo>${yieldsTo} </#list>||
+|||||| Not nestable beneath detector types: <#list entryPoint.searchRule.notNestableBeneath as notNestableBeneath>${notNestableBeneath} </#list>||
+|||||| Not nestable beneath detectors: <#list entryPoint.searchRule.notNestableBeneathDetectables as notNestableBeneathDetectables>${notNestableBeneathDetectables} </#list>||
 <#list entryPoint.detectables as detectable>
 ||| ${detectable.name} |${detectable.language!""}|${detectable.forge!""} | <#if detectable.requirementsMarkdown?has_content ><#noautoesc>${detectable.requirementsMarkdown!""}</#noautoesc></#if>|${detectable.accuracy!""}|
 </#list>
