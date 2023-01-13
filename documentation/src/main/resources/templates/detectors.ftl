@@ -12,6 +12,8 @@ The following table contains details for each Detector type,
 entry point, and detector.
 Details on these terms is available on the [detector search](../downloadingandrunning/detectorcascade.md) page.
 
+The [Detector search troubleshooting details](detectors-detailed.md) page contains a simiar table that includes additional details that can be valuable when troubleshooting detector search issues and question.
+
 |Detector Type|Entry Point|Detector|Language|Forge|Requirements|Accuracy|
 |---|---|---|---|---|---|---|
 <#list detectorTypes as detectorType>
